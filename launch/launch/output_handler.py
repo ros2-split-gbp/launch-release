@@ -15,7 +15,7 @@
 import sys
 
 
-class OutputHandler(object):
+class OutputHandler:
 
     def __init__(self):
         self.print_mutex = None
@@ -52,7 +52,7 @@ class OutputHandler(object):
         pass
 
 
-class CompositeOutputHandler(object):
+class CompositeOutputHandler:
 
     def __init__(self, output_handlers):
         self.output_handlers = output_handlers
@@ -61,7 +61,7 @@ class CompositeOutputHandler(object):
         return ', '.join([h.get_description() for h in self.output_handlers])
 
     def support_stderr2stdout(self):
-        return all([h.support_stderr2stdout() for h in self.output_handlers])
+        return all(h.support_stderr2stdout() for h in self.output_handlers)
 
     def __getattr__(self, name):
         def wrapper(*args, **kwargs):

@@ -33,7 +33,7 @@ class _TaskException(Exception):
         self.exception = exception
 
 
-class DefaultLauncher(object):
+class DefaultLauncher:
 
     def __init__(self, name_prefix='', sigint_timeout=10):
         self.name_prefix = name_prefix
@@ -95,6 +95,8 @@ class DefaultLauncher(object):
                 ' '.join(self.task_descriptors[e.task_descriptor_index].cmd), file=sys.stderr)
             raise e.exception
         except KeyboardInterrupt:
+            # ignore further keyboard interrupts to cleanly shutdown
+            signal.signal(signal.SIGINT, signal.SIG_IGN)
             self.interrupt_launch_non_threadsafe()
             loop.run_forever()
             returncode = 1
