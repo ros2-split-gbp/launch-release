@@ -1,0 +1,12 @@
+Source: ros-r2b3-launch-testing
+Section: misc
+Priority: extra
+Maintainer: Esteve Fernandez <esteve@osrfoundation.org>
+Build-Depends: debhelper (>= 9.0.0), ros-r2b3-ament-flake8, ros-r2b3-ament-pep257, ros-r2b3-launch, ros-r2b3-ros-workspace, python3-all, python3-setuptools
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-r2b3-launch-testing
+Architecture: any
+Depends: ${python3:Depends}, ${misc:Depends}, ros-r2b3-ament-index-python, ros-r2b3-launch, ros-r2b3-ros-workspace
+Description: Helper scripts for tests that use the ROS launch tool.
