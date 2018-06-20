@@ -6,6 +6,7 @@ setup(
     version='0.4.0',
     packages=find_packages(exclude=['test']),
     install_requires=['setuptools'],
+    zip_safe=True,
     author='Dirk Thomas',
     author_email='dthomas@osrfoundation.org',
     maintainer='Dirk Thomas',
@@ -27,7 +28,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'launch = launch.main:main',
+            'launch = launch.legacy.main:main',
         ],
     },
 )
