@@ -1,0 +1,17 @@
+ros-bouncy-launch (0.5.0-1bionic) bionic; urgency=high
+
+  * Fixed a bug where unclosed asyncio loops caused a traceback on the terminal on exit, but only in Python 3.5 (#85 <https://github.com/ros2/launch/issues/85>)
+  * Changed to use variable typing in comments to support python 3.5 (#81 <https://github.com/ros2/launch/issues/81>)
+  * New launch API (#74 <https://github.com/ros2/launch/issues/74>)
+    * See pull request for more details and links to architecture documentation and the design doc.
+  * Moved launch source files into launch.legacy namespace (#73 <https://github.com/ros2/launch/issues/73>)
+    * This was in preparation for the new launch API.
+  * [for launch.legacy] fixed a flake8 warning (#72 <https://github.com/ros2/launch/issues/72>)
+  * [for launch.legacy] set zip_safe to avoid warning during installation (#71 <https://github.com/ros2/launch/issues/71>)
+  * [for launch.legacy] Fix hang on keyboard interrupt (#69 <https://github.com/ros2/launch/issues/69>)
+    * When keyboard interrupt exception occurs loop.run_forever is called. But there is no loop.stop call. This causes a hang.
+  * Contributors: Devin, Dirk Thomas, William Woodall, dhood
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Tue, 19 Jun 2018 07:00:00 -0000
+
+
