@@ -1,0 +1,15 @@
+ros-bouncy-ros2launch (0.5.1-0bionic) bionic; urgency=high
+
+  * Improved error handling in the ``ros2 launch`` command line tool. (#93 <https://github.com/ros2/launch/issues/93>)
+  * Contributors: William Woodall
+
+ -- William Woodall <william@osrfoundation.org>  Wed, 27 Jun 2018 07:00:00 -0000
+
+ros-bouncy-ros2launch (0.5.0-0bionic) bionic; urgency=high
+
+  * First commit of the ros2launch package and the ros2 launch CLI tool (#76 <https://github.com/ros2/launch/issues/76>)
+  * Contributors: William Woodall
+
+ -- William Woodall <william@osrfoundation.org>  Tue, 19 Jun 2018 07:00:00 -0000
+
+
