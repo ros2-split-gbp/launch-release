@@ -1,3 +1,30 @@
+## launch (bouncy) - 0.5.2-0
+
+The packages in the `launch` repository were released into the `bouncy` distro by running `/Users/william/.pyenv/versions/2.7.15/bin/bloom-release -r bouncy -t bouncy launch` on `Tue, 17 Jul 2018 17:06:15 -0000`
+
+These packages were released:
+- `launch`
+- `launch_ros`
+- `launch_testing`
+- `ros2launch`
+
+Version of package(s) in repository `launch`:
+
+- upstream repository: https://github.com/ros2/launch.git
+- release repository: https://github.com/ros2-gbp/launch-release.git
+- rosdistro version: `0.5.1-0`
+- old version: `0.5.1-0`
+- new version: `0.5.2-0`
+
+Versions of tools used:
+
+- bloom version: `0.6.6`
+- catkin_pkg version: `0.4.5`
+- rosdep version: `0.12.2`
+- rosdistro version: `0.6.8`
+- vcstools version: `0.1.40`
+
+
 ## launch (bouncy) - 0.5.1-0
 
 The packages in the `launch` repository were released into the `bouncy` distro by running `/usr/local/opt/python2/Frameworks/Python.framework/Versions/2.7/bin/bloom-release -r bouncy -t bouncy launch` on `Wed, 27 Jun 2018 22:13:20 -0000`
