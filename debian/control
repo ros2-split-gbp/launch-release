@@ -1,0 +1,12 @@
+Source: ros-bouncy-launch
+Section: misc
+Priority: extra
+Maintainer: Dirk Thomas <dthomas@osrfoundation.org>
+Build-Depends: debhelper (>= 9.0.0), python3-pytest, ros-bouncy-ament-copyright, ros-bouncy-ament-flake8, ros-bouncy-ament-pep257, ros-bouncy-osrf-pycommon, ros-bouncy-ros-workspace, python3-all, python3-setuptools
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-bouncy-launch
+Architecture: any
+Depends: ${python3:Depends}, ${misc:Depends}, ros-bouncy-osrf-pycommon, ros-bouncy-ros-workspace
+Description: The ROS launch tool.
