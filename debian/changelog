@@ -1,0 +1,26 @@
+ros-bouncy-launch-testing (0.6.0-0bionic) bionic; urgency=high
+
+
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Mon, 20 Aug 2018 07:00:00 -0000
+
+ros-bouncy-launch-testing (0.5.2-0bionic) bionic; urgency=high
+
+
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Tue, 17 Jul 2018 07:00:00 -0000
+
+ros-bouncy-launch-testing (0.5.1-0bionic) bionic; urgency=high
+
+
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Wed, 27 Jun 2018 07:00:00 -0000
+
+ros-bouncy-launch-testing (0.5.0-0bionic) bionic; urgency=high
+
+  * Updated to use new launch.legacy namespace (#73 <https://github.com/ros2/launch/issues/73>)
+  * Contributors: Dirk Thomas, Mikael Arguedas, William Woodall
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Tue, 19 Jun 2018 07:00:00 -0000
+
+
