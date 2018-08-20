@@ -1,0 +1,53 @@
+ros-bouncy-launch (0.6.0-0bionic) bionic; urgency=high
+
+  * Added a way to include other Python launch files (#122 <https://github.com/ros2/launch/issues/122>)
+    * Signed-off-by: William Woodall <mailto:william@osrfoundation.org>
+  * Implemented the concept of Action conditions (#121 <https://github.com/ros2/launch/issues/121>)
+    * Signed-off-by: William Woodall <mailto:william@osrfoundation.org>
+  * Added IncludeLaunchDescription action (#120 <https://github.com/ros2/launch/issues/120>)
+    * fixes #115 <https://github.com/ros2/launch/issues/115>
+    * Signed-off-by: William Woodall <mailto:william@osrfoundation.org>
+  * Contributors: William Woodall
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Mon, 20 Aug 2018 07:00:00 -0000
+
+ros-bouncy-launch (0.5.2-0bionic) bionic; urgency=high
+
+  * Made a change to avoid reentrancy of signal handlers (#99 <https://github.com/ros2/launch/issues/99>)
+  * Ignored warning for builtins A003 (#100 <https://github.com/ros2/launch/issues/100>)
+  * Fixed exception when launch process with environment variables (#96 <https://github.com/ros2/launch/issues/96>)
+  * Contributors: Shane Loretz, William Woodall, dhood
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Tue, 17 Jul 2018 07:00:00 -0000
+
+ros-bouncy-launch (0.5.1-0bionic) bionic; urgency=high
+
+  * Changed the behavior when signaling SIGINT to subprocesses on Windows, where it now does SIGTERM instead, because SIGINT causes a ValueError about SIGINT being an unsupported signal number. (#94 <https://github.com/ros2/launch/issues/94>)
+  * Fixed a bug by avoiding reentrancy in the SIGINT signal handler. (#92 <https://github.com/ros2/launch/issues/92>)
+  * Various Windows fixes. (#87 <https://github.com/ros2/launch/issues/87>)
+    * LaunchService.run() now returns non-0 when there are exceptions in coroutines.
+    * Updated ``launch_counters.py`` example for Windows.
+    * Fixed a bug that would cause mismatched asyncio loops in some futures.
+    * Addressed the fact that ``signal.SIGKILL`` doesn’t exist on Windows, so emulate it in our Event.
+    * Fixed an issue that resulted in spurious asyncio errors in LaunchService test.
+  * Contributors: William Woodall, dhood
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Wed, 27 Jun 2018 07:00:00 -0000
+
+ros-bouncy-launch (0.5.0-0bionic) bionic; urgency=high
+
+  * Fixed a bug where unclosed asyncio loops caused a traceback on the terminal on exit, but only in Python 3.5 (#85 <https://github.com/ros2/launch/issues/85>)
+  * Changed to use variable typing in comments to support python 3.5 (#81 <https://github.com/ros2/launch/issues/81>)
+  * New launch API (#74 <https://github.com/ros2/launch/issues/74>)
+    * See pull request for more details and links to architecture documentation and the design doc.
+  * Moved launch source files into launch.legacy namespace (#73 <https://github.com/ros2/launch/issues/73>)
+    * This was in preparation for the new launch API.
+  * [for launch.legacy] fixed a flake8 warning (#72 <https://github.com/ros2/launch/issues/72>)
+  * [for launch.legacy] set zip_safe to avoid warning during installation (#71 <https://github.com/ros2/launch/issues/71>)
+  * [for launch.legacy] Fix hang on keyboard interrupt (#69 <https://github.com/ros2/launch/issues/69>)
+    * When keyboard interrupt exception occurs loop.run_forever is called. But there is no loop.stop call. This causes a hang.
+  * Contributors: Devin, Dirk Thomas, William Woodall, dhood
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Tue, 19 Jun 2018 07:00:00 -0000
+
+
