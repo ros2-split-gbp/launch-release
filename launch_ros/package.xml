@@ -4,7 +4,7 @@
   schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
   <name>launch_ros</name>
-  <version>0.6.0</version>
+  <version>0.7.0</version>
   <description>ROS specific extensions to the launch tool.</description>
   <maintainer email="william@osrfoundation.org">William Woodall</maintainer>
   <license>Apache License 2.0</license>
@@ -14,6 +14,7 @@
   <depend>lifecycle_msgs</depend>
   <depend>osrf_pycommon</depend>
   <depend>rclpy</depend>
+  <depend>python3-yaml</depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
