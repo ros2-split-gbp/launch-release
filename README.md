@@ -1,3 +1,33 @@
+## launch (crystal) - 0.7.2-0
+
+The packages in the `launch` repository were released into the `crystal` distro by running `/Users/william/.pyenv/versions/2.7.15/bin/bloom-release -r crystal -t crystal launch` on `Fri, 07 Dec 2018 07:08:39 -0000`
+
+These packages were released:
+- `launch`
+- `launch_ros`
+- `launch_testing`
+- `ros2launch`
+
+These packages were explicitly ignored:
+- `test_launch_ros`
+
+Version of package(s) in repository `launch`:
+
+- upstream repository: https://github.com/ros2/launch.git
+- release repository: https://github.com/ros2-gbp/launch-release.git
+- rosdistro version: `0.7.1-1`
+- old version: `0.7.1-1`
+- new version: `0.7.2-0`
+
+Versions of tools used:
+
+- bloom version: `0.6.9`
+- catkin_pkg version: `0.4.9`
+- rosdep version: `0.13.0`
+- rosdistro version: `0.7.0`
+- vcstools version: `0.1.40`
+
+
 ## launch (crystal) - 0.7.1-1
 
 The packages in the `launch` repository were released into the `crystal` distro by running `/Users/william/.pyenv/versions/2.7.15/bin/bloom-release -r crystal -t crystal launch` on `Mon, 19 Nov 2018 22:17:53 -0000`
