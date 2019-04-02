@@ -1,3 +1,33 @@
+## launch (crystal) - 0.7.4-0
+
+The packages in the `launch` repository were released into the `crystal` distro by running `/usr/local/bin/bloom-release -r crystal -t crystal launch` on `Tue, 02 Apr 2019 18:58:56 -0000`
+
+These packages were released:
+- `launch`
+- `launch_ros`
+- `launch_testing`
+- `ros2launch`
+
+These packages were explicitly ignored:
+- `test_launch_ros`
+
+Version of package(s) in repository `launch`:
+
+- upstream repository: https://github.com/ros2/launch.git
+- release repository: https://github.com/ros2-gbp/launch-release.git
+- rosdistro version: `0.7.3-0`
+- old version: `0.7.3-0`
+- new version: `0.7.4-0`
+
+Versions of tools used:
+
+- bloom version: `0.7.2`
+- catkin_pkg version: `0.4.10`
+- rosdep version: `0.15.1`
+- rosdistro version: `0.7.2`
+- vcstools version: `0.1.40`
+
+
 ## launch (crystal) - 0.7.3-0
 
 The packages in the `launch` repository were released into the `crystal` distro by running `/usr/bin/bloom-release -r crystal launch --override-release-repository-push-url git@github.com:ros2-gbp/launch-release` on `Thu, 13 Dec 2018 06:37:47 -0000`
