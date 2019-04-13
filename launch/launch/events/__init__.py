@@ -15,12 +15,16 @@
 """Package for events."""
 
 from . import process
+from .execution_complete import ExecutionComplete
 from .include_launch_description import IncludeLaunchDescription
+from .matchers import matches_action
 from .shutdown import Shutdown
 from .timer_event import TimerEvent
 
 __all__ = [
+    'matches_action',
     'process',
+    'ExecutionComplete',
     'IncludeLaunchDescription',
     'Shutdown',
     'TimerEvent',

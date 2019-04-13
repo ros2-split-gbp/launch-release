@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='launch',
-    version='0.7.4',
+    version='0.8.0',
     packages=find_packages(exclude=['test']),
     install_requires=['setuptools'],
     zip_safe=True,
@@ -26,9 +26,4 @@ setup(
         'processes and react on individual processes exiting.'),
     license='Apache License, Version 2.0',
     tests_require=['pytest'],
-    entry_points={
-        'console_scripts': [
-            'launch = launch.legacy.main:main',
-        ],
-    },
 )
