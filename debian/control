@@ -1,0 +1,12 @@
+Source: ros-dashing-test-launch-testing
+Section: misc
+Priority: extra
+Maintainer: Michel Hidalgo <michel@ekumenlabs.com>
+Build-Depends: debhelper (>= 9.0.0), python3-pytest, ros-dashing-ament-cmake, ros-dashing-ament-cmake-gtest, ros-dashing-ament-cmake-pytest, ros-dashing-ament-cmake-python, ros-dashing-ament-index-python, ros-dashing-ament-lint-auto, ros-dashing-ament-lint-common, ros-dashing-launch, ros-dashing-launch-testing, ros-dashing-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-dashing-test-launch-testing
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-dashing-ros-workspace
+Description: Tests for the launch_testing package.
