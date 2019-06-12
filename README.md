@@ -1,3 +1,32 @@
+## launch (dashing) - 0.8.4-1
+
+The packages in the `launch` repository were released into the `dashing` distro by running `/usr/local/bin/bloom-release -r dashing -t dashing -e launch` on `Wed, 12 Jun 2019 20:57:27 -0000`
+
+These packages were released:
+- `launch`
+- `launch_testing`
+- `launch_testing_ament_cmake`
+
+These packages were explicitly ignored:
+- `test_launch_testing`
+
+Version of package(s) in repository `launch`:
+
+- upstream repository: https://github.com/ros2/launch.git
+- release repository: https://github.com/ros2-gbp/launch-release.git
+- rosdistro version: `0.8.3-1`
+- old version: `0.8.3-1`
+- new version: `0.8.4-1`
+
+Versions of tools used:
+
+- bloom version: `0.8.0`
+- catkin_pkg version: `0.4.12`
+- rosdep version: `0.15.1`
+- rosdistro version: `0.7.2`
+- vcstools version: `0.1.40`
+
+
 ## launch (dashing) - 0.8.3-1
 
 The packages in the `launch` repository were released into the `dashing` distro by running `/usr/local/bin/bloom-release -r dashing -t dashing launch` on `Thu, 30 May 2019 00:00:43 -0000`
