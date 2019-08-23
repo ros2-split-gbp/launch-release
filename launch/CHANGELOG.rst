@@ -2,6 +2,11 @@
 Changelog for package launch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.8.5 (2019-08-22)
+------------------
+* Add support for conditions in IncludeLaunchDescription actions (`#304 <https://github.com/ros2/launch/issues/304>`_)
+* Contributors: Michel Hidalgo, chapulina
+
 0.8.4 (2019-06-12)
 ------------------
 * Fix build_cop `#214 <https://github.com/ros2/launch/issues/214>`_ (`#259 <https://github.com/ros2/launch/issues/259>`_)
