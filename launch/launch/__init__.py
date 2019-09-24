@@ -17,11 +17,14 @@
 from . import actions
 from . import conditions
 from . import events
+from . import frontend
 from . import logging
+from . import substitutions
 from .action import Action
 from .condition import Condition
 from .event import Event
 from .event_handler import EventHandler
+from .invalid_launch_file_error import InvalidLaunchFileError
 from .launch_context import LaunchContext
 from .launch_description import LaunchDescription
 from .launch_description_entity import LaunchDescriptionEntity
@@ -38,11 +41,14 @@ __all__ = [
     'actions',
     'conditions',
     'events',
+    'frontend',
     'logging',
+    'substitutions',
     'Action',
     'Condition',
     'Event',
     'EventHandler',
+    'InvalidLaunchFileError',
     'LaunchContext',
     'LaunchDescription',
     'LaunchDescriptionEntity',

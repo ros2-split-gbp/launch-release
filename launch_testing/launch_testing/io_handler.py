@@ -12,6 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+A module providing process IO capturing classes.
+
+To prevent pytest from rewriting this module assertions, please PYTEST_DONT_REWRITE.
+See https://docs.pytest.org/en/latest/assert.html#disabling-assert-rewriting for
+further reference.
+"""
+
+
 import threading
 
 from .asserts.assert_output import assertInStdout
@@ -133,7 +142,8 @@ class ActiveIoHandler(IoHandler):
         *,
         strict_proc_matching=True,
         output_filter=None,
-        timeout=10
+        timeout=10,
+        strip_ansi_escape_sequences=True
     ):
         success = False
 
@@ -145,7 +155,8 @@ class ActiveIoHandler(IoHandler):
                     process=process,
                     cmd_args=cmd_args,
                     output_filter=output_filter,
-                    strict_proc_matching=strict_proc_matching
+                    strict_proc_matching=strict_proc_matching,
+                    strip_ansi_escape_sequences=strip_ansi_escape_sequences,
                 )
                 return True
             except NoMatchingProcessException:
@@ -172,7 +183,7 @@ class ActiveIoHandler(IoHandler):
                                        strict_proc_matching=False)
             if len(matches) == 0:
                 raise Exception(
-                    "After fimeout, found no processes matching '{}'  "
+                    "After timeout, found no processes matching '{}'  "
                     "It either doesn't exist, was never launched, "
                     "or didn't generate any output".format(
                         process

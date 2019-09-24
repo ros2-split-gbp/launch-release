@@ -15,21 +15,26 @@
 """Module for the IncludeLaunchDescription action."""
 
 import os
-from typing import Iterable
+from typing import Iterable, Sequence
 from typing import List
 from typing import Optional
 from typing import Tuple
 
 from .set_launch_configuration import SetLaunchConfiguration
 from ..action import Action
+from ..frontend import Entity
+from ..frontend import expose_action
+from ..frontend import Parser
 from ..launch_context import LaunchContext
 from ..launch_description_entity import LaunchDescriptionEntity
 from ..launch_description_source import LaunchDescriptionSource
+from ..launch_description_sources import AnyLaunchDescriptionSource
 from ..some_substitutions_type import SomeSubstitutionsType
 from ..utilities import normalize_to_list_of_substitutions
 from ..utilities import perform_substitutions
 
 
+@expose_action('include')
 class IncludeLaunchDescription(Action):
     """
     Action that includes a launch description source and yields its entities when visited.
@@ -68,7 +73,24 @@ class IncludeLaunchDescription(Action):
         """Constructor."""
         super().__init__(**kwargs)
         self.__launch_description_source = launch_description_source
-        self.__launch_arguments = launch_arguments
+        self.__launch_arguments = () if launch_arguments is None else tuple(launch_arguments)
+
+    @classmethod
+    def parse(cls, entity: Entity, parser: Parser):
+        """Return `IncludeLaunchDescription` action and kwargs for constructing it."""
+        _, kwargs = super().parse(entity, parser)
+        file_path = parser.parse_substitution(entity.get_attr('file'))
+        kwargs['launch_description_source'] = AnyLaunchDescriptionSource(file_path)
+        args = entity.get_attr('arg', data_type=List[Entity], optional=True)
+        if args is not None:
+            kwargs['launch_arguments'] = [
+                (
+                    parser.parse_substitution(e.get_attr('name')),
+                    parser.parse_substitution(e.get_attr('value'))
+                )
+                for e in args
+            ]
+        return cls, kwargs
 
     @property
     def launch_description_source(self) -> LaunchDescriptionSource:
@@ -76,15 +98,15 @@ class IncludeLaunchDescription(Action):
         return self.__launch_description_source
 
     @property
-    def launch_arguments(self) -> Iterable[Tuple[SomeSubstitutionsType, SomeSubstitutionsType]]:
+    def launch_arguments(self) -> Sequence[Tuple[SomeSubstitutionsType, SomeSubstitutionsType]]:
         """Getter for self.__launch_arguments."""
-        if self.__launch_arguments is None:
-            return []
-        else:
-            return self.__launch_arguments
+        return self.__launch_arguments
 
-    def _get_launch_file_location(self):
-        launch_file_location = os.path.abspath(self.__launch_description_source.location)
+    def _get_launch_file(self):
+        return os.path.abspath(self.__launch_description_source.location)
+
+    def _get_launch_file_directory(self):
+        launch_file_location = self._get_launch_file()
         if os.path.exists(launch_file_location):
             launch_file_location = os.path.dirname(launch_file_location)
         else:
@@ -93,16 +115,20 @@ class IncludeLaunchDescription(Action):
             launch_file_location = self.__launch_description_source.location
         return launch_file_location
 
-    def describe_sub_entities(self) -> List[LaunchDescriptionEntity]:
-        """Override describe_sub_entities from LaunchDescriptionEntity to return sub entities."""
+    def get_sub_entities(self):
+        """Get subentities."""
         ret = self.__launch_description_source.try_get_launch_description_without_context()
         return [ret] if ret is not None else []
 
     def execute(self, context: LaunchContext) -> List[LaunchDescriptionEntity]:
         """Execute the action."""
         launch_description = self.__launch_description_source.get_launch_description(context)
+        # If the location does not exist, then it's likely set to '<script>' or something.
         context.extend_locals({
-            'current_launch_file_directory': self._get_launch_file_location(),
+            'current_launch_file_path': self._get_launch_file(),
+        })
+        context.extend_locals({
+            'current_launch_file_directory': self._get_launch_file_directory(),
         })
 
         # Do best effort checking to see if non-optional, non-default declared arguments

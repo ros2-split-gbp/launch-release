@@ -12,9 +12,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+A module providing process output assertions.
+
+To prevent pytest from rewriting this module assertions, please PYTEST_DONT_REWRITE.
+See https://docs.pytest.org/en/latest/assert.html#disabling-assert-rewriting for
+further reference.
+"""
+
+
 import os
 
+from osrf_pycommon.terminal_color import remove_ansi_escape_sequences
+
 from ..util import resolveProcesses
+
+
+def normalize_lineseps(lines):
+    r"""Normalize and then return the given lines to all use '\n'."""
+    lines = lines.replace(os.linesep, '\n')
+    # This happens (even on Linux and macOS) when capturing I/O from an
+    # emulated tty.
+    lines = lines.replace('\r\n', '\n')
+    return lines
 
 
 def get_matching_function(expected_output):
@@ -33,7 +53,7 @@ def get_matching_function(expected_output):
             if hasattr(expected_output[0], 'search'):
                 def _match(expected, actual):
                     start = 0
-                    actual = actual.replace(os.linesep, '\n')
+                    actual = normalize_lineseps(actual)
                     for pattern in expected:
                         match = pattern.search(actual, start)
                         if match is None:
@@ -45,7 +65,7 @@ def get_matching_function(expected_output):
         return lambda expected, actual: expected in actual
     elif hasattr(expected_output, 'search'):
         return lambda expected, actual: (
-            expected.search(actual.replace(os.linesep, '\n')) is not None
+            expected.search(normalize_lineseps(actual)) is not None
         )
     raise ValueError('Unknown format for expected output')
 
@@ -56,7 +76,8 @@ def assertInStdout(proc_output,
                    cmd_args=None,
                    *,
                    output_filter=None,
-                   strict_proc_matching=True):
+                   strict_proc_matching=True,
+                   strip_ansi_escape_sequences=True):
     """
     Assert that 'output' was found in the standard out of a process.
 
@@ -82,6 +103,11 @@ def assertInStdout(proc_output,
     of proc and cmd_args matches multiple processes, then strict_proc_matching=True will raise
     an error.
     :type strict_proc_matching: bool
+
+    :param strip_ansi_escape_sequences: If True (default), strip ansi escape
+    sequences from actual output before comparing with the output filter or
+    expected output.
+    :type strip_ansi_escape_sequences: bool
     """
     resolved_procs = resolveProcesses(
         info_obj=proc_output,
@@ -98,6 +124,8 @@ def assertInStdout(proc_output,
         full_output = ''.join(
             output.text.decode() for output in proc_output[proc] if output.from_stdout
         )
+        if strip_ansi_escape_sequences:
+            full_output = remove_ansi_escape_sequences(full_output)
         if output_filter is not None:
             full_output = output_filter(full_output)
         if output_match(expected_output, full_output):
