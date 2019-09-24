@@ -1,3 +1,34 @@
+## launch (eloquent) - 0.9.0-1
+
+The packages in the `launch` repository were released into the `eloquent` distro by running `/usr/bin/bloom-release -r eloquent -t eloquent launch` on `Tue, 24 Sep 2019 16:59:13 -0000`
+
+These packages were released:
+- `launch`
+- `launch_testing`
+- `launch_testing_ament_cmake`
+- `launch_xml`
+- `launch_yaml`
+
+These packages were explicitly ignored:
+- `test_launch_testing`
+
+Version of package(s) in repository `launch`:
+
+- upstream repository: https://github.com/ros2/launch.git
+- release repository: unknown
+- rosdistro version: `null`
+- old version: `null`
+- new version: `0.9.0-1`
+
+Versions of tools used:
+
+- bloom version: `0.8.0`
+- catkin_pkg version: `0.4.13`
+- rosdep version: `0.15.2`
+- rosdistro version: `0.7.4`
+- vcstools version: `0.1.42`
+
+
 ## launch (dashing) - 0.8.6-1
 
 The packages in the `launch` repository were released into the `dashing` distro by running `/usr/bin/bloom-release -r dashing launch --override-release-repository-push-url git@github.com:ros2-gbp/launch-release` on `Fri, 06 Sep 2019 18:14:22 -0000`
