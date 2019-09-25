@@ -2,6 +2,15 @@
 Changelog for package launch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.9.1 (2019-09-25)
+------------------
+* Fix error in ExecuteProcess parse classmethod (`#339 <https://github.com/ros2/launch/issues/339>`_)
+* Add support to ignore fields when parsing ExecuteProcess. (`#336 <https://github.com/ros2/launch/issues/336>`_)
+* Make parse_substitution handle zero-width text. (`#335 <https://github.com/ros2/launch/issues/335>`_)
+* Fix InvalidLaunchFileError error message. (`#333 <https://github.com/ros2/launch/issues/333>`_)
+* Fix default Action describe_conditional_sub_entities() implementation. (`#334 <https://github.com/ros2/launch/issues/334>`_)
+* Contributors: Michel Hidalgo, ivanpauno
+
 0.9.0 (2019-09-18)
 ------------------
 * Fix "'GroupAction' object has no attribute 'actions'" error (`#327 <https://github.com/ros2/launch/issues/327>`_)
