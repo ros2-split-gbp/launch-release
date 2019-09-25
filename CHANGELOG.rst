@@ -2,6 +2,9 @@
 Changelog for package launch_yaml
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.9.1 (2019-09-25)
+------------------
+
 0.9.0 (2019-09-18)
 ------------------
 * install package manifest (`#330 <https://github.com/ros2/launch/issues/330>`_)
