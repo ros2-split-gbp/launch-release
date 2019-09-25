@@ -2,6 +2,11 @@
 Changelog for package launch_testing
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.9.1 (2019-09-25)
+------------------
+* Optionally remove ready fn arg from generate_test_description (`#322 <https://github.com/ros2/launch/issues/322>`_)
+* Contributors: Michel Hidalgo, Peter Baughman
+
 0.9.0 (2019-09-18)
 ------------------
 * install package manifest (`#330 <https://github.com/ros2/launch/issues/330>`_)
