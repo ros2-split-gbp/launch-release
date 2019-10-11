@@ -6,11 +6,12 @@ from setuptools import setup
 
 setup(
     name='launch_testing',
-    version='0.8.6',
+    version='0.8.7',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/ament_index/resource_index/packages', ['resource/launch_testing']),
         ('lib/launch_testing', glob.glob('example_processes/**')),
+        ('share/launch_testing', ['package.xml']),
         ('share/launch_testing/examples', glob.glob('examples/[!_]**')),
     ],
     entry_points={
