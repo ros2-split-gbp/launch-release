@@ -15,15 +15,18 @@
 import os
 import subprocess
 import tempfile
+import types
 import unittest
 import xml.etree.ElementTree as ET
 
 import ament_index_python
+
+import launch_testing
 from launch_testing.junitxml import unittestResultsToXml
+from launch_testing.loader import LoadTestsFromPythonModule
 from launch_testing.test_result import FailResult
 from launch_testing.test_result import SkipResult
 from launch_testing.test_result import TestResult as TR
-import pytest
 
 
 class TestGoodXmlOutput(unittest.TestCase):
@@ -39,7 +42,7 @@ class TestGoodXmlOutput(unittest.TestCase):
         path = os.path.join(
             ament_index_python.get_package_share_directory('launch_testing'),
             'examples',
-            'good_proc_launch_test.py'
+            'good_proc.test.py'
         )
 
         assert 0 == subprocess.run(
@@ -65,7 +68,7 @@ class TestGoodXmlOutput(unittest.TestCase):
         # Expecting an element called '{package}.{test_base_name}.launch_tests' since this
         # was not parametrized
         self.assertEqual(
-            test_suite.attrib['name'], 'test_xml_output.good_proc_launch_test.launch_tests'
+            test_suite.attrib['name'], 'test_xml_output.good_proc.test.launch_tests'
         )
 
         # Drilling down a little further, we expect the class names to show up in the testcase
@@ -75,7 +78,6 @@ class TestGoodXmlOutput(unittest.TestCase):
         self.assertIn('test_full_output', case_names)
 
 
-@pytest.mark.usefixtures('source_test_loader_class_fixture')
 class TestXmlFunctions(unittest.TestCase):
     # This are closer to unit tests - just call the functions that generate XML
 
@@ -116,22 +118,25 @@ class TestXmlFunctions(unittest.TestCase):
         def generate_test_description(ready_fn):
             raise Exception('This should never be invoked')  # pragma: no cover
 
-        def test_fail_always(self):
-            assert False  # pragma: no cover
+        class FakePreShutdownTests(unittest.TestCase):
 
-        def test_pass_always(self):
-            pass  # pragma: no cover
+            def test_fail_always(self):
+                assert False  # pragma: no cover
 
-        test_runs = self.source_test_loader(
-            generate_test_description,
-            pre_shutdown_tests=[
-                test_fail_always,
-            ],
-            post_shutdown_tests=[
-                test_fail_always,
-                test_pass_always
-            ]
-        )
+        @launch_testing.post_shutdown_test()
+        class FakePostShutdownTests(unittest.TestCase):
+
+            def test_fail_always(self):
+                assert False  # pragma: no cover
+
+            def test_pass_always(self):
+                pass  # pragma: no cover
+
+        test_module = types.ModuleType('test_module')
+        test_module.generate_test_description = generate_test_description
+        test_module.FakePreShutdownTests = FakePreShutdownTests
+        test_module.FakePostShutdownTests = FakePostShutdownTests
+        test_runs = LoadTestsFromPythonModule(test_module)
 
         self.assertEqual(1, len(test_runs))  # Not a parametrized launch, so only 1 run
 

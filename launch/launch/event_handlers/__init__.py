@@ -19,7 +19,6 @@ from .on_execution_complete import OnExecutionComplete
 from .on_include_launch_description import OnIncludeLaunchDescription
 from .on_process_exit import OnProcessExit
 from .on_process_io import OnProcessIO
-from .on_process_start import OnProcessStart
 from .on_shutdown import OnShutdown
 
 __all__ = [
@@ -28,6 +27,5 @@ __all__ = [
     'OnIncludeLaunchDescription',
     'OnProcessExit',
     'OnProcessIO',
-    'OnProcessStart',
     'OnShutdown',
 ]

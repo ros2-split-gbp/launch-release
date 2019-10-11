@@ -20,7 +20,6 @@ from typing import cast
 from typing import List  # noqa
 from typing import Optional
 from typing import Text
-from typing import TYPE_CHECKING
 from typing import Union
 
 from ..event import Event
@@ -30,8 +29,10 @@ from ..launch_context import LaunchContext
 from ..launch_description_entity import LaunchDescriptionEntity
 from ..some_actions_type import SomeActionsType
 
-if TYPE_CHECKING:
-    from ..actions import ExecuteProcess  # noqa: F401
+
+if False:
+    # imports here would cause loops, but are only used as forward-references for type-checking
+    from ..actions import ExecuteProcess  # noqa
 
 
 class OnProcessStart(BaseEventHandler):

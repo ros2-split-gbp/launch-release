@@ -12,18 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""
-A module providing process info capturing classes.
-
-To prevent pytest from rewriting this module assertions, please PYTEST_DONT_REWRITE.
-See https://docs.pytest.org/en/latest/assert.html#disabling-assert-rewriting for
-further reference.
-"""
-
-
 import threading
 from launch.actions import ExecuteProcess  # noqa
-from launch.events.process import ProcessExited
 
 from .util import NoMatchingProcessException
 from .util import resolveProcesses
@@ -120,35 +110,6 @@ class ActiveProcInfoHandler(ProcInfoHandler):
 
         def proc_is_shutdown():
             try:
-                resolved_process = resolveProcesses(
-                    info_obj=self._proc_info_handler,
-                    process=process,
-                    cmd_args=cmd_args,
-                    strict_proc_matching=True
-                )[0]
-
-                process_event = self._proc_info_handler[resolved_process]
-                return isinstance(process_event, ProcessExited)
-            except NoMatchingProcessException:
-                return False
-
-        with self._sync_lock:
-            success = self._sync_lock.wait_for(
-                proc_is_shutdown,
-                timeout=timeout
-            )
-
-        assert success, "Timed out waiting for process '{}' to finish".format(process)
-
-    def assertWaitForStartup(self,
-                             process,
-                             cmd_args=None,
-                             *,
-                             timeout=10):
-        success = False
-
-        def proc_is_started():
-            try:
                 resolveProcesses(
                     info_obj=self._proc_info_handler,
                     process=process,
@@ -161,8 +122,8 @@ class ActiveProcInfoHandler(ProcInfoHandler):
 
         with self._sync_lock:
             success = self._sync_lock.wait_for(
-                proc_is_started,
+                proc_is_shutdown,
                 timeout=timeout
             )
 
-        assert success, "Timed out waiting for process '{}' to start".format(process)
+        assert success, "Timed out waiting for process '{}' to finish".format(process)

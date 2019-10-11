@@ -16,10 +16,8 @@
 
 from .gtest import GTest
 from .pytest import PyTest
-from .ready import ReadyToTest
 
 __all__ = [
     'GTest',
     'PyTest',
-    'ReadyToTest',
 ]

@@ -12,16 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import imp
 import os
 import sys
+import types
 import unittest
 
 import ament_index_python
+
 import launch
 import launch.actions
+
 import launch_testing
+from launch_testing.loader import LoadTestsFromPythonModule
 from launch_testing.loader import TestRun as TR
 from launch_testing.test_runner import LaunchTestRunner
+
 import mock
 
 
@@ -108,11 +114,28 @@ def test_dut_that_has_exception(capsys):
 
 
 # Run some known good tests to check the nominal-good test path
-def test_nominally_good_dut(source_test_loader):
+def test_nominally_good_dut():
 
-    def test_ok(self):
+    # The following is test setup nonsense to turn a string into a python module that can be
+    # passed to the test runner.  You can skip over this.  It does not add to your understanding
+    # of the test.
+    test_code = """
+import unittest
+from launch_testing import post_shutdown_test
+
+class PreTest(unittest.TestCase):
+    def test_pre_ok(self):
         pass
 
+@post_shutdown_test()
+class PostTest(unittest.TestCase):
+    def test_post_ok(self):
+        pass
+    """
+    module = imp.new_module('test_module')
+    exec(test_code, module.__dict__)
+
+    # Here's the actual 'test' part of the test:
     TEST_PROC_PATH = os.path.join(
         ament_index_python.get_package_prefix('launch_testing'),
         'lib/launch_testing',
@@ -128,12 +151,10 @@ def test_nominally_good_dut(source_test_loader):
             launch.actions.OpaqueFunction(function=lambda context: ready_fn()),
         ])
 
+    module.generate_test_description = generate_test_description
+
     runner = LaunchTestRunner(
-        source_test_loader(
-            generate_test_description,
-            pre_shutdown_tests=[test_ok],
-            post_shutdown_tests=[test_ok],
-        )
+        LoadTestsFromPythonModule(module)
     )
 
     results = runner.run()
@@ -142,7 +163,7 @@ def test_nominally_good_dut(source_test_loader):
         assert result.wasSuccessful()
 
 
-def test_parametrized_run_with_one_failure(source_test_loader):
+def test_parametrized_run_with_one_failure():
 
     # Test Data
     @launch_testing.parametrize('arg_val', [1, 2, 3, 4, 5])
@@ -165,20 +186,27 @@ def test_parametrized_run_with_one_failure(source_test_loader):
             launch.actions.OpaqueFunction(function=lambda context: ready_fn())
         ])
 
-    def test_fail_on_two(self, proc_output, arg_val):
-        proc_output.assertWaitFor('Starting Up')
-        assert arg_val != 2
+    class FakePreShutdownTests(unittest.TestCase):
 
-    def test_fail_on_three(self, arg_val):
-        assert arg_val != 3
+        def test_fail_on_two(self, proc_output, arg_val):
+            proc_output.assertWaitFor('Starting Up')
+            assert arg_val != 2
+
+    @launch_testing.post_shutdown_test()
+    class FakePostShutdownTests(unittest.TestCase):
+
+        def test_fail_on_three(self, arg_val):
+            assert arg_val != 3
+
+    # Set up a fake module containing the test data:
+    test_module = types.ModuleType('test_module')
+    test_module.generate_test_description = generate_test_description
+    test_module.FakePreShutdownTests = FakePreShutdownTests
+    test_module.FakePostShutdownTests = FakePostShutdownTests
 
     # Run the test:
     runner = LaunchTestRunner(
-        source_test_loader(
-            generate_test_description,
-            pre_shutdown_tests=[test_fail_on_two],
-            post_shutdown_tests=[test_fail_on_three],
-        )
+        LoadTestsFromPythonModule(test_module)
     )
     results = runner.run()
 
@@ -189,25 +217,34 @@ def test_parametrized_run_with_one_failure(source_test_loader):
     assert len(fails) == 2  # 2 fails in an active test, 3 fails in a post-shutdown test
 
 
-def test_skipped_launch_description(source_test_loader):
+def test_skipped_launch_description():
 
     @unittest.skip('skip reason string')
     def generate_test_description(ready_fn):
         raise Exception('This should never be invoked')  # pragma: no cover
 
-    def test_fail_always(self):
-        assert False  # pragma: no cover
+    class FakePreShutdownTests(unittest.TestCase):
 
-    def test_pass_always(self):
-        pass  # pragma: no cover
+        def test_fail_always(self):
+            assert False  # pragma: no cover
+
+    @launch_testing.post_shutdown_test()
+    class FakePostShutdownTests(unittest.TestCase):
+
+        def test_fail_always(self):
+            assert False  # pragma: no cover
+
+        def test_pass_always(self):
+            pass  # pragma: no cover
+
+    test_module = types.ModuleType('test_module')
+    test_module.generate_test_description = generate_test_description
+    test_module.FakePreShutdownTests = FakePreShutdownTests
+    test_module.FakePostShutdownTests = FakePostShutdownTests
 
     # Run the test:
     runner = LaunchTestRunner(
-        source_test_loader(
-            generate_test_description,
-            pre_shutdown_tests=[test_fail_always],
-            post_shutdown_tests=[test_fail_always, test_pass_always],
-        )
+        LoadTestsFromPythonModule(test_module)
     )
 
     results = runner.run()

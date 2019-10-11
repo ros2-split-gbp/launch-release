@@ -26,7 +26,7 @@ from typing import Text
 import launch.logging
 
 from .event import Event
-from .event_handler import BaseEventHandler
+from .event_handler import EventHandler
 from .substitution import Substitution
 
 
@@ -161,11 +161,11 @@ class LaunchContext:
         """Check whether an event would be handled or not."""
         return any(handler.matches(event) for handler in self._event_handlers)
 
-    def register_event_handler(self, event_handler: BaseEventHandler) -> None:
+    def register_event_handler(self, event_handler: EventHandler) -> None:
         """Register a event handler."""
         self._event_handlers.appendleft(event_handler)
 
-    def unregister_event_handler(self, event_handler: BaseEventHandler) -> None:
+    def unregister_event_handler(self, event_handler: EventHandler) -> None:
         """Unregister an event handler."""
         self._event_handlers.remove(event_handler)
 

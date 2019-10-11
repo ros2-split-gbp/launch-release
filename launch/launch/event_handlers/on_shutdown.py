@@ -19,7 +19,6 @@ from typing import cast
 from typing import Optional
 from typing import overload
 from typing import Text
-from typing import TYPE_CHECKING
 
 from ..event import Event
 from ..event_handler import BaseEventHandler
@@ -27,8 +26,9 @@ from ..events import Shutdown
 from ..some_actions_type import SomeActionsType
 from ..utilities import is_a_subclass
 
-if TYPE_CHECKING:
-    from ..launch_context import LaunchContext  # noqa: F401
+if False:
+    # imports here would cause loops, but are only used as forward-references for type-checking
+    from ..launch_context import LaunchContext  # noqa
 
 
 class OnShutdown(BaseEventHandler):

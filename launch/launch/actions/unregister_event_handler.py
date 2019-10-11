@@ -15,20 +15,20 @@
 """Module for the UnregisterEventHandler action."""
 
 from ..action import Action
-from ..event_handler import BaseEventHandler
+from ..event_handler import EventHandler
 from ..launch_context import LaunchContext
 
 
 class UnregisterEventHandler(Action):
     """Action that unregisters an event handler."""
 
-    def __init__(self, event_handler: BaseEventHandler, **kwargs) -> None:
+    def __init__(self, event_handler: EventHandler, **kwargs) -> None:
         """Constructor."""
         super().__init__(**kwargs)
         self.__event_handler = event_handler
 
     @property
-    def event_handler(self) -> BaseEventHandler:
+    def event_handler(self) -> EventHandler:
         """Getter for self.__event_handler."""
         return self.__event_handler
 

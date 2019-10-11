@@ -15,10 +15,10 @@
 """Module for the Substitution class."""
 
 from typing import Text
-from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from .launch_context import LaunchContext  # noqa: F401
+if False:
+    # imports here would cause loops, but are only used as forward-references for type-checking
+    from .launch_context import LaunchContext  # noqa
 
 
 class Substitution:

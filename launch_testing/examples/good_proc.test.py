@@ -24,8 +24,6 @@ import launch.actions
 import launch_testing
 from launch_testing.asserts import assertSequentialStdout
 
-import pytest
-
 
 TEST_PROC_PATH = os.path.join(
     ament_index_python.get_package_prefix('launch_testing'),
@@ -43,7 +41,6 @@ dut_process = launch.actions.ExecuteProcess(
 )
 
 
-@pytest.mark.launch_test
 def generate_test_description(ready_fn):
 
     return launch.LaunchDescription([
@@ -89,7 +86,7 @@ class TestProcessOutput(unittest.TestCase):
 
     def test_out_of_order(self):
         # This demonstrates that we notice out-of-order IO
-        with self.assertRaisesRegex(AssertionError, "'Loop 2' not found"):
+        with self.assertRaisesRegexp(AssertionError, "'Loop 2' not found"):
             with assertSequentialStdout(self.proc_output, dut_process) as cm:
                 cm.assertInStdout('Loop 1')
                 cm.assertInStdout('Loop 3')

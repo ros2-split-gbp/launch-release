@@ -25,7 +25,7 @@ def test_print_args():
     testpath = os.path.join(
         ament_index_python.get_package_share_directory('launch_testing'),
         'examples',
-        'args_launch_test.py',
+        'args.test.py',
     )
 
     completed_process = subprocess.run(
@@ -49,7 +49,7 @@ def test_no_args_to_print():
     testpath = os.path.join(
         ament_index_python.get_package_share_directory('launch_testing'),
         'examples',
-        'good_proc_launch_test.py',
+        'good_proc.test.py',
     )
 
     completed_process = subprocess.run(

@@ -14,12 +14,11 @@
 
 """Module for TimerEvent event."""
 
-from typing import TYPE_CHECKING
-
 from ..event import Event
 
-if TYPE_CHECKING:
-    from ..actions import TimerAction  # noqa: F401
+if False:
+    # imports here would cause loops, but are only used as forward-references for type-checking
+    from ...actions import TimerAction  # noqa
 
 
 class TimerEvent(Event):

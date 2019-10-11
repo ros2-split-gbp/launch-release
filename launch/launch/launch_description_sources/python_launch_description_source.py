@@ -45,7 +45,4 @@ class PythonLaunchDescriptionSource(LaunchDescriptionSource):
             launch_file_path,
             'interpreted python launch file'
         )
-
-    def _get_launch_description(self, location):
-        """Get the LaunchDescription from location."""
-        return get_launch_description_from_python_launch_file(location)
+        self._get_launch_description = get_launch_description_from_python_launch_file
