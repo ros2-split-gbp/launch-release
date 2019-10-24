@@ -12,42 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
+"""
+A module providing process output assertions.
 
+To prevent pytest from rewriting this module assertions, please PYTEST_DONT_REWRITE.
+See https://docs.pytest.org/en/latest/assert.html#disabling-assert-rewriting for
+further reference.
+"""
+
+from osrf_pycommon.terminal_color import remove_ansi_escape_sequences
+
+from ..tools.text import build_text_match
 from ..util import resolveProcesses
-
-
-def get_matching_function(expected_output):
-    if isinstance(expected_output, (list, tuple)):
-        if len(expected_output) > 0:
-            if isinstance(expected_output[0], str):
-                def _match(expected, actual):
-                    lines = actual.splitlines()
-                    for pattern in expected:
-                        if pattern not in lines:
-                            return False
-                        index = lines.index(pattern)
-                        lines = lines[index + 1:]
-                    return True
-                return _match
-            if hasattr(expected_output[0], 'search'):
-                def _match(expected, actual):
-                    start = 0
-                    actual = actual.replace(os.linesep, '\n')
-                    for pattern in expected:
-                        match = pattern.search(actual, start)
-                        if match is None:
-                            return False
-                        start = match.end()
-                    return True
-                return _match
-    elif isinstance(expected_output, str):
-        return lambda expected, actual: expected in actual
-    elif hasattr(expected_output, 'search'):
-        return lambda expected, actual: (
-            expected.search(actual.replace(os.linesep, '\n')) is not None
-        )
-    raise ValueError('Unknown format for expected output')
 
 
 def assertInStdout(proc_output,
@@ -56,7 +32,8 @@ def assertInStdout(proc_output,
                    cmd_args=None,
                    *,
                    output_filter=None,
-                   strict_proc_matching=True):
+                   strict_proc_matching=True,
+                   strip_ansi_escape_sequences=True):
     """
     Assert that 'output' was found in the standard out of a process.
 
@@ -65,7 +42,7 @@ def assertInStdout(proc_output,
     :type proc_output: An launch_testing.IoHandler
 
     :param expected_output: The output to search for
-    :type expected_output: string or regex pattern or list of the aforementioned types
+    :type expected_output: string or regex pattern or a list of the aforementioned types
 
     :param process: The process whose output will be searched
     :type process: A string (search by process name) or a launch.actions.ExecuteProcess object
@@ -82,6 +59,11 @@ def assertInStdout(proc_output,
     of proc and cmd_args matches multiple processes, then strict_proc_matching=True will raise
     an error.
     :type strict_proc_matching: bool
+
+    :param strip_ansi_escape_sequences: If True (default), strip ansi escape
+    sequences from actual output before comparing with the output filter or
+    expected output.
+    :type strip_ansi_escape_sequences: bool
     """
     resolved_procs = resolveProcesses(
         info_obj=proc_output,
@@ -92,15 +74,17 @@ def assertInStdout(proc_output,
     if output_filter is not None:
         if not callable(output_filter):
             raise ValueError('output_filter is not callable')
-    output_match = get_matching_function(expected_output)
+    output_match = build_text_match(expected_output)
 
     for proc in resolved_procs:  # Nominally just one matching proc
         full_output = ''.join(
             output.text.decode() for output in proc_output[proc] if output.from_stdout
         )
+        if strip_ansi_escape_sequences:
+            full_output = remove_ansi_escape_sequences(full_output)
         if output_filter is not None:
             full_output = output_filter(full_output)
-        if output_match(expected_output, full_output):
+        if output_match(full_output) is not None:
             break
     else:
         names = ', '.join(sorted(p.process_details['name'] for p in resolved_procs))

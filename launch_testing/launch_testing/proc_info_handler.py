@@ -12,8 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+A module providing process info capturing classes.
+
+To prevent pytest from rewriting this module assertions, please PYTEST_DONT_REWRITE.
+See https://docs.pytest.org/en/latest/assert.html#disabling-assert-rewriting for
+further reference.
+"""
+
+
 import threading
 from launch.actions import ExecuteProcess  # noqa
+from launch.events.process import ProcessExited
 
 from .util import NoMatchingProcessException
 from .util import resolveProcesses
@@ -60,7 +70,7 @@ class ProcInfoHandler:
             return self._proc_info[key]
 
 
-class ActiveProcInfoHandler(ProcInfoHandler):
+class ActiveProcInfoHandler:
     """Allows tests to wait on process termination before proceeding."""
 
     def __init__(self):
@@ -68,6 +78,10 @@ class ActiveProcInfoHandler(ProcInfoHandler):
         # Deliberately not calling the 'super' constructor here.  We're building this class
         # by composition so we can still give out the unsynchronized version
         self._proc_info_handler = ProcInfoHandler()
+
+    @property
+    def proc_event(self):
+        return self._sync_lock
 
     def append(self, process_info):
         with self._sync_lock:
@@ -110,6 +124,34 @@ class ActiveProcInfoHandler(ProcInfoHandler):
 
         def proc_is_shutdown():
             try:
+                resolved_process = resolveProcesses(
+                    info_obj=self._proc_info_handler,
+                    process=process,
+                    cmd_args=cmd_args,
+                    strict_proc_matching=True
+                )[0]
+                process_event = self._proc_info_handler[resolved_process]
+                return isinstance(process_event, ProcessExited)
+            except NoMatchingProcessException:
+                return False
+
+        with self._sync_lock:
+            success = self._sync_lock.wait_for(
+                proc_is_shutdown,
+                timeout=timeout
+            )
+
+        assert success, "Timed out waiting for process '{}' to finish".format(process)
+
+    def assertWaitForStartup(self,
+                             process,
+                             cmd_args=None,
+                             *,
+                             timeout=10):
+        success = False
+
+        def proc_is_started():
+            try:
                 resolveProcesses(
                     info_obj=self._proc_info_handler,
                     process=process,
@@ -122,8 +164,8 @@ class ActiveProcInfoHandler(ProcInfoHandler):
 
         with self._sync_lock:
             success = self._sync_lock.wait_for(
-                proc_is_shutdown,
+                proc_is_started,
                 timeout=timeout
             )
 
-        assert success, "Timed out waiting for process '{}' to finish".format(process)
+        assert success, "Timed out waiting for process '{}' to start".format(process)

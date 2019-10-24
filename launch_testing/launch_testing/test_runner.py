@@ -22,6 +22,7 @@ from launch import LaunchService
 from launch.actions import RegisterEventHandler
 from launch.event_handlers import OnProcessExit
 from launch.event_handlers import OnProcessIO
+from launch.event_handlers import OnProcessStart
 
 from .io_handler import ActiveIoHandler
 from .parse_arguments import parse_launch_arguments
@@ -86,6 +87,7 @@ class _RunnerWorker():
         self._test_run.bind(
             self._test_run.pre_shutdown_tests,
             injected_attributes={
+                'launch_service': self._launch_service,
                 'proc_info': proc_info,
                 'proc_output': proc_output,
                 'test_args': test_args,
@@ -94,6 +96,7 @@ class _RunnerWorker():
                 full_context,
                 # Add a few more things to the args dictionary:
                 **{
+                    'launch_service': self._launch_service,
                     'proc_info': proc_info,
                     'proc_output': proc_output,
                     'test_args': test_args
@@ -122,9 +125,13 @@ class _RunnerWorker():
         # the test and add our own event handlers for process IO and process exit:
         launch_description = LaunchDescription([
             *self._test_run_preamble,
-            launch.actions.IncludeLaunchDescription(
-                launch.LaunchDescriptionSource(launch_description=test_ld),
-                launch_arguments=parsed_launch_arguments
+            RegisterEventHandler(
+                OnProcessStart(on_start=lambda info, unused: proc_info.append(info))
+            ),
+            RegisterEventHandler(
+                OnProcessStart(
+                    on_start=lambda info, unused: proc_output.track(info.process_name)
+                )
             ),
             RegisterEventHandler(
                 OnProcessExit(on_exit=lambda info, unused: proc_info.append(info))
@@ -135,6 +142,10 @@ class _RunnerWorker():
                     on_stderr=proc_output.append,
                 )
             ),
+            launch.actions.IncludeLaunchDescription(
+                launch.LaunchDescriptionSource(launch_description=test_ld),
+                launch_arguments=parsed_launch_arguments
+            ),
         ])
 
         self._launch_service.include_launch_description(
@@ -142,7 +153,11 @@ class _RunnerWorker():
         )
 
         self._test_tr.start()  # Run the tests on another thread
-        self._launch_service.run()  # This will block until the test thread stops it
+
+        # This will block until the test thread stops it
+        self._launch_service.run(
+            shutdown_when_idle=not self._test_run.markers.get('keep_alive', False)
+        )
 
         if not self._tests_completed.wait(timeout=0):
             # LaunchService.run returned before the tests completed.  This can be because the user
@@ -260,7 +275,7 @@ class LaunchTestRunner(object):
             # Drill down into any parametrized test descriptions and make sure the argument names
             # are correct.  A simpler check can use getcallargs, but then you won't get a very
             # helpful message.
-            base_fn = inspect.unwrap(run.test_description_function)
+            base_fn = inspect.unwrap(run._test_description_function)
             base_args = inspect.getfullargspec(base_fn)
             base_args = base_args.args + base_args.kwonlyargs
 
@@ -284,4 +299,8 @@ class LaunchTestRunner(object):
                     )
 
             # This is a double-check
-            inspect.getcallargs(run.test_description_function, ready_fn=lambda: None)
+            try:
+                inspect.getcallargs(run._test_description_function, ready_fn=lambda: None)
+            except TypeError:
+                # We also support generate_test_description functions without a ready_fn
+                inspect.getcallargs(run._test_description_function)

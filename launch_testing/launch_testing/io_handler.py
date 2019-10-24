@@ -12,6 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+A module providing process IO capturing classes.
+
+To prevent pytest from rewriting this module assertions, please PYTEST_DONT_REWRITE.
+See https://docs.pytest.org/en/latest/assert.html#disabling-assert-rewriting for
+further reference.
+"""
+
+
 import threading
 
 from .asserts.assert_output import assertInStdout
@@ -30,12 +39,14 @@ class IoHandler:
         self._sequence_list = []  # A time-ordered list of IO from all processes
         self._process_name_dict = {}  # A dict of time ordered lists of IO key'd by the process
 
+    def track(self, process_name):
+        if process_name not in self._process_name_dict:
+            self._process_name_dict[process_name] = []
+
     def append(self, process_io):
         self._sequence_list.append(process_io)
-
         if process_io.process_name not in self._process_name_dict:
             self._process_name_dict[process_io.process_name] = []
-
         self._process_name_dict[process_io.process_name].append(process_io)
 
     def __iter__(self):
@@ -47,7 +58,7 @@ class IoHandler:
 
         :returns [launch.actions.ExecuteProcess]:
         """
-        return [val[0].action for val in self._process_name_dict.values()]
+        return [val[0].action for val in self._process_name_dict.values() if len(val) > 0]
 
     def process_names(self):
         """
@@ -70,7 +81,7 @@ class IoHandler:
             return list(self._process_name_dict[key.process_details['name']])
 
 
-class ActiveIoHandler(IoHandler):
+class ActiveIoHandler:
     """
     Holds stdout captured from running processes.
 
@@ -83,6 +94,15 @@ class ActiveIoHandler(IoHandler):
         # Deliberately not calling the 'super' constructor here.  We're building this class
         # by composition so we can still give out the unsynchronized version
         self._io_handler = IoHandler()
+
+    @property
+    def io_event(self):
+        return self._sync_lock
+
+    def track(self, process_name):
+        with self._sync_lock:
+            self._io_handler.track(process_name)
+            self._sync_lock.notify()
 
     def append(self, process_io):
         with self._sync_lock:
@@ -133,7 +153,8 @@ class ActiveIoHandler(IoHandler):
         *,
         strict_proc_matching=True,
         output_filter=None,
-        timeout=10
+        timeout=10,
+        strip_ansi_escape_sequences=True
     ):
         success = False
 
@@ -145,7 +166,8 @@ class ActiveIoHandler(IoHandler):
                     process=process,
                     cmd_args=cmd_args,
                     output_filter=output_filter,
-                    strict_proc_matching=strict_proc_matching
+                    strict_proc_matching=strict_proc_matching,
+                    strip_ansi_escape_sequences=strip_ansi_escape_sequences,
                 )
                 return True
             except NoMatchingProcessException:
@@ -172,7 +194,7 @@ class ActiveIoHandler(IoHandler):
                                        strict_proc_matching=False)
             if len(matches) == 0:
                 raise Exception(
-                    "After fimeout, found no processes matching '{}'  "
+                    "After timeout, found no processes matching '{}'  "
                     "It either doesn't exist, was never launched, "
                     "or didn't generate any output".format(
                         process

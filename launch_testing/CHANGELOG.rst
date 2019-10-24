@@ -2,26 +2,32 @@
 Changelog for package launch_testing
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.8.7 (2019-10-11)
+0.9.2 (2019-10-23)
 ------------------
-* install package manifest (`#330 <https://github.com/ros2/launch/issues/330>`_) (`#344 <https://github.com/ros2/launch/issues/344>`_)
-  Signed-off-by: Dirk Thomas <dirk-thomas@users.noreply.github.com>
-  (cherry picked from commit 81edb5f43a81ade32e5271caa19c38756f52dac2)
-* Contributors: Dirk Thomas
+* Support launch test reruns when using pytest (`#348 <https://github.com/ros2/launch/issues/348>`_)
+* Support CLI commands testing (`#279 <https://github.com/ros2/launch/issues/279>`_)
+* Contributors: Michel Hidalgo
 
-0.8.6 (2019-09-06)
+0.9.1 (2019-09-25)
 ------------------
-* Address additional syntax issues with Python 3.5. (`#328 <https://github.com/ros2/launch/issues/328>`_)
-* Restore support for Python 3.5 (`#324 <https://github.com/ros2/launch/issues/324>`_)
-* Contributors: Steven! Ragnarök
+* Optionally remove ready fn arg from generate_test_description (`#322 <https://github.com/ros2/launch/issues/322>`_)
+* Contributors: Michel Hidalgo, Peter Baughman
 
-0.8.5 (2019-08-22)
+0.9.0 (2019-09-18)
 ------------------
-
-0.8.4 (2019-06-12)
-------------------
+* install package manifest (`#330 <https://github.com/ros2/launch/issues/330>`_)
+* Unindent setup.cfg options. (`#326 <https://github.com/ros2/launch/issues/326>`_)
+* Use renamed remove_ansi_escape_sequences. (`#302 <https://github.com/ros2/launch/issues/302>`_)0
+* Enable launch test discovery in pytest (`#312 <https://github.com/ros2/launch/issues/312>`_)
+* Support LaunchService injection into pre-shutdown tests. (`#308 <https://github.com/ros2/launch/issues/308>`_)
+* Add assertWaitForStartup method to match assertWaitForShutdown (`#278 <https://github.com/ros2/launch/issues/278>`_)
+* Fix a simple typo in an error message. (`#301 <https://github.com/ros2/launch/issues/301>`_)
+* Fix launch_testing output filtering (`#296 <https://github.com/ros2/launch/issues/296>`_)
+* Revert "Revert "[execute_process] emulate_tty configurable and defaults to true"" (`#277 <https://github.com/ros2/launch/issues/277>`_)
+* Fix formatting (`#262 <https://github.com/ros2/launch/issues/262>`_)
 * Fix proc lookup for processes with multiple command-line arguments (`#229 <https://github.com/ros2/launch/issues/229>`_)
-* Contributors: Peter Baughman
+* Remove ros domain ID dependency (`#256 <https://github.com/ros2/launch/issues/256>`_)
+* Contributors: Chris Lalancette, Dirk Thomas, Esteve Fernandez, Michel Hidalgo, Peter Baughman, William Woodall, ivanpauno
 
 0.8.3 (2019-05-29)
 ------------------

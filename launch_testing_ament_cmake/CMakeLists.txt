@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(launch_testing_ament_cmake NONE)
 
-find_package(ament_cmake_core REQUIRED)
+find_package(ament_cmake REQUIRED)
 
 ament_package(
   CONFIG_EXTRAS "${PROJECT_NAME}-extras.cmake"
@@ -14,8 +14,8 @@ install(
 )
 
 if(BUILD_TESTING)
-  find_package(ament_cmake_pytest REQUIRED)
-  ament_add_pytest_test(launch_testing_ament_cmake_pytests test)
+  find_package(ament_cmake_copyright REQUIRED)
+  ament_copyright()
 
   include(cmake/add_launch_test.cmake)
 
@@ -26,7 +26,7 @@ if(BUILD_TESTING)
 
   # Test argument passing.  This test won't pass unless you give it an argument
   add_launch_test(
-    "${LAUNCH_TESTING_INSTALL_PREFIX}/share/launch_testing/examples/args.test.py"
+    "${LAUNCH_TESTING_INSTALL_PREFIX}/share/launch_testing/examples/args_launch_test.py"
     ARGS "dut_arg:=--anything"
   )
 endif()

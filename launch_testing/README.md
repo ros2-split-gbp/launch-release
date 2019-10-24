@@ -23,6 +23,28 @@ launch_test launch_testing/examples/good_proc.test.py
 
 #### The Launch Description
 
+```python
+def generate_test_description():
+
+    return launch.LaunchDescription([
+        launch.actions.ExecuteProcess(
+            cmd=[path_to_process],
+        ),
+
+        # Start tests right away - no need to wait for anything in this example.
+        # In a more complicated launch description, we might want this action happen
+        # once some process starts or once some other event happens
+        launch_testing.actions.ReadyToTest()
+    ])
+```
+
+The `generate_test_description` function should return a `launch.LaunchDescription` object that launches the system to be tested.
+
+The launch description needs to include a `ReadyToTest` action to signal to the test framework that it's safe to start the active tests.
+
+In the above example, there is no need to delay the start of the tests so the `ReadyToTest` action is a peer to the process under test and will signal to the framework that it's safe to start around the same time the `ExecuteProcess` action is run.
+
+In older style tests, a function called `ready_fn` is declared as an argument to `generate_test_description` and must be plumbed into the launch description with an `OpaqueFunction`.
 
 ```python
 def generate_test_description(ready_fn):
@@ -36,9 +58,6 @@ def generate_test_description(ready_fn):
         launch.actions.OpaqueFunction(function=lambda context: ready_fn()),
     ])
 ```
-
-The `generate_test_description` function should return a `launch.LaunchDescription` object that launches the system to be tested.
-It should also call the `ready_fn` that is passed in to signal when the tests should start.  In the `good_proc.test.py` example, there is no need to delay the start of the tests so the `ready_fn` is called concurrently when the launching of the process under test.
 
 #### Active Tests
 
@@ -74,7 +93,7 @@ Asserts that a message is found in the stdout of a particular process.
 
     The text to look for in the process standard out
 
-  -` proc`:
+  - `proc`:
 
     Either the process name as a string, or a `launch.actions.ExecuteProcess` object that was used to start the process.
     Pass `None` or an empty string to search all processes.
@@ -159,19 +178,6 @@ launch_test examples/args.test.py dut_arg:=value
 
 See the [launch_testing example with arguments](examples/args.test.py) for further reference.
 
-## ROS_DOMAIN_ID Isolation
-
-If the ROS_DOMAIN_ID environment variable isn't set, `launch_test` will automatically coordinate with other `launch_test` processes running on the same host
-to use a unique ROS_DOMAIN_ID for the launched processes.
-This allows multiple instances to run in parallel (the default with `colcon test`).
-Note that `launch_test` cannot coordinate unique domains across multiple hosts.  
-If the ROS_DOMAIN_ID environment variable is already set, `launch_test` respects the environment variable and won't attempt to select a different ID.
-In this case it's the responsibility of the user to design tests that can be safely run in parallel, or not use parallel test workers.
-
-When working on a system without a ROS_DOMAIN_ID set, the automatic domain isolation behavior can be disabled with the --disable-isolation flag.
-This can be useful for debugging tests by running without isolation and running a command like `ros2 topic echo` in another terminal window to see what's
-happening in the test as it runs.
-
 ## Using CMake
 
 To run launch tests from a CMakeLists.txt file, you'll need to declare a dependency on
@@ -192,3 +198,67 @@ add_launch_test(
   ARGS "arg1:=foo"
 )
 ```
+
+## Examples
+
+### `good_proc_launch_test.py`
+
+Usage:
+
+```sh
+launch_test test/launch_testing/examples/good_proc_launch_test.py
+```
+
+This test checks a process called good_proc (source found in the [example_processes folder](example_processes)).
+good_proc is a simple python process that prints "Loop 1, Loop2, etc. every second until it's terminated with ctrl+c.
+The test will launch the process, wait for a few loops to complete by monitoring stdout, then terminate the process
+and run some post-shutdown checks.
+
+The pre-shutdown tests check that "Loop 1, Loop 2, Loop 3, Loop 4"
+are all printed to stdout.  Once this test finishes, the process under test is shut down
+
+After shutdown, we run a similar test that checks more output, and also checks the
+order of the output.  `test_out_of_order` demonstrates that the `assertSequentialStdout`
+context manager is able to detect out of order stdout.
+
+### `terminating_proc_launch_test.py`
+
+Usage:
+
+```sh
+launch_test test/launch_testing/examples/terminating_proc_launch_test.py
+```
+
+This test checks proper functionality of the _terminating\_proc_ example (source found in the [example_processes folder](example_processes)).
+
+### `args_launch_test.py`
+
+Usage to view the arguments:
+
+```sh
+launch_test test/launch_testing/examples/args_launch_test.py --show-args
+```
+
+Usage to run the test:
+
+```sh
+launch_test test/launch_testing/examples/args_launch_test.py dut_arg:=hey
+```
+
+This example shows how to pass arguments into a launch test.  The arguments are made avilable
+in the launch description via a launch.substitutions.LaunchConfiguration.  The arguments are made
+available to the test cases via a self.test_args dictionary
+
+This example will fail if no arguments are passed.
+
+### `context_launch_test.py`
+
+Usage:
+
+```sh
+launch_test test/launch_testing/examples/context_launch_test.py
+```
+
+This example shows how the `generate_test_description` function can return a tuple where the second
+item is a dictionary of objects that will be injected into the individual test cases.  Tests that
+wish to use elements of the test context can add arguments with names matching the keys of the dictionary.

@@ -5,12 +5,13 @@ package_name = 'launch'
 
 setup(
     name=package_name,
-    version='0.8.7',
+    version='0.9.2',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/' + package_name, ['package.xml']),
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
+        ('share/launch/frontend', ['share/launch/frontend/grammar.lark']),
     ],
     install_requires=['setuptools'],
     zip_safe=True,

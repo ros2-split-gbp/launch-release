@@ -17,17 +17,56 @@ import inspect
 import itertools
 import unittest
 
+from .actions import ReadyToTest
+
 
 def _normalize_ld(launch_description_fn):
     # A launch description fn can return just a launch description, or a tuple of
     # (launch_description, test_context).  This wrapper function normalizes things
     # so we always get a tuple, sometimes with an empty dictionary for the test_context
-    def wrapper(*args, **kwargs):
-        result = launch_description_fn(*args, **kwargs)
+    def normalize(result):
         if isinstance(result, tuple):
             return result
         else:
             return result, {}
+
+    def wrapper(**kwargs):
+
+        fn_args = inspect.getfullargspec(launch_description_fn)
+
+        if 'ready_fn' in fn_args.args + fn_args.kwonlyargs:
+            # This is an old-style launch_description function which epects ready_fn to be passed
+            # in to the function
+            return normalize(launch_description_fn(**kwargs))
+        else:
+            # This is a new-style launch_description which should contain a ReadyToTest action
+            ready_fn = kwargs.pop('ready_fn')
+            result = normalize(launch_description_fn(**kwargs))
+            # Fish the ReadyToTest action out of the launch description and plumb our
+            # ready_fn to it
+
+            def iterate_ready_to_test_actions(entities):
+                """Recursively search LaunchDescription entities for all ReadyToTest actions."""
+                for entity in entities:
+                    if isinstance(entity, ReadyToTest):
+                        yield entity
+                    yield from iterate_ready_to_test_actions(
+                        entity.describe_sub_entities()
+                    )
+                    for conditional_sub_entity in entity.describe_conditional_sub_entities():
+                        yield from iterate_ready_to_test_actions(
+                            conditional_sub_entity[1]
+                        )
+
+            try:
+                ready_action = next(e for e in iterate_ready_to_test_actions(result[0].entities))
+            except StopIteration:  # No ReadyToTest action found
+                raise Exception(
+                    'generate_test_description functions without a ready_fn argument must return '
+                    'a LaunchDescription containing a ReadyToTest action'
+                )
+            ready_action._add_callback(ready_fn)
+            return result
 
     return wrapper
 
@@ -41,7 +80,9 @@ class TestRun:
                  pre_shutdown_tests,
                  post_shutdown_tests):
         self.name = name
-        self.test_description_function = test_description_function
+        if not hasattr(test_description_function, '__markers__'):
+            test_description_function.__markers__ = {}
+        self._test_description_function = test_description_function
         self.normalized_test_description = _normalize_ld(test_description_function)
 
         self.param_args = param_args
@@ -60,6 +101,10 @@ class TestRun:
                 new_name = tc._testMethodName + self._format_params()
                 setattr(tc, '_testMethodName', new_name)
                 setattr(tc, new_name, test_method)
+
+    @property
+    def markers(self):
+        return self._test_description_function.__markers__
 
     def bind(self, tests, injected_attributes={}, injected_args={}):
         """
@@ -88,7 +133,7 @@ class TestRun:
         This should only be used for the purposes of introspecting the launch description.  The
         returned launch description is not meant to be launched
         """
-        return self.test_description_function(lambda: None)
+        return self.normalized_test_description(ready_fn=lambda: None)[0]
 
     def all_cases(self):
         yield from _iterate_tests_in_test_suite(self.pre_shutdown_tests)
@@ -106,11 +151,12 @@ class TestRun:
 
 
 def LoadTestsFromPythonModule(module, *, name='launch_tests'):
-
-    if hasattr(module.generate_test_description, '__parametrized__'):
-        normalized_test_description_func = module.generate_test_description
+    if not hasattr(module.generate_test_description, '__parametrized__'):
+        normalized_test_description_func = (
+            lambda: [(module.generate_test_description, {})]
+        )
     else:
-        normalized_test_description_func = [(module.generate_test_description, {})]
+        normalized_test_description_func = module.generate_test_description
 
     # If our test description is parameterized, we'll load a set of tests for each
     # individual launch
@@ -119,7 +165,7 @@ def LoadTestsFromPythonModule(module, *, name='launch_tests'):
                     args,
                     PreShutdownTestLoader().loadTestsFromModule(module),
                     PostShutdownTestLoader().loadTestsFromModule(module))
-            for description, args in normalized_test_description_func]
+            for description, args in normalized_test_description_func()]
 
 
 def PreShutdownTestLoader():
@@ -136,13 +182,16 @@ def _make_loader(load_post_shutdown):
         """TestLoader selectively loads pre-shutdown or post-shutdown tests."""
 
         def loadTestsFromTestCase(self, testCaseClass):
-
             if getattr(testCaseClass, '__post_shutdown_test__', False) == load_post_shutdown:
-                cases = super(_loader, self).loadTestsFromTestCase(testCaseClass)
+                # Isolate test classes instances on a per parameterization basis
+                cases = super(_loader, self).loadTestsFromTestCase(
+                    type(testCaseClass.__name__, (testCaseClass,), {
+                        '__module__': testCaseClass.__module__
+                    })
+                )
                 return cases
-            else:
-                # Empty test suites will be ignored by the test runner
-                return self.suiteClass()
+            # Empty test suites will be ignored by the test runner
+            return self.suiteClass()
 
     return _loader()
 
@@ -184,9 +233,9 @@ def _bind_test_args_to_tests(context, test_suite):
 
 
 def _partially_bind_matching_args(unbound_function, arg_candidates):
-    function_arg_names = inspect.getfullargspec(unbound_function).args
+    function_args = inspect.signature(unbound_function).parameters
     # We only want to bind the part of the context matches the test args
-    matching_args = {k: v for (k, v) in arg_candidates.items() if k in function_arg_names}
+    matching_args = {k: v for (k, v) in arg_candidates.items() if k in function_args}
     return functools.partial(unbound_function, **matching_args)
 
 

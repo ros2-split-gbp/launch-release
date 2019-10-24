@@ -43,6 +43,7 @@ from .opaque_function import OpaqueFunction
 from .timer_action import TimerAction
 
 from ..action import Action
+from ..conditions import evaluate_condition_expression
 from ..event import Event
 from ..event_handler import EventHandler
 from ..event_handlers import OnProcessExit
@@ -58,6 +59,9 @@ from ..events.process import ProcessStdin
 from ..events.process import ProcessStdout
 from ..events.process import ShutdownProcess
 from ..events.process import SignalProcess
+from ..frontend import Entity
+from ..frontend import expose_action
+from ..frontend import Parser
 from ..launch_context import LaunchContext
 from ..launch_description import LaunchDescription
 from ..launch_description_entity import LaunchDescriptionEntity
@@ -66,6 +70,7 @@ from ..some_substitutions_type import SomeSubstitutionsType
 from ..substitution import Substitution  # noqa: F401
 from ..substitutions import LaunchConfiguration
 from ..substitutions import PythonExpression
+from ..substitutions import TextSubstitution
 from ..utilities import create_future
 from ..utilities import is_a_subclass
 from ..utilities import normalize_to_list_of_substitutions
@@ -75,6 +80,7 @@ _global_process_counter_lock = threading.Lock()
 _global_process_counter = 0  # in Python3, this number is unbounded (no rollover)
 
 
+@expose_action('executable')
 class ExecuteProcess(Action):
     """Action that begins executing a process and sets up event handlers for the process."""
 
@@ -91,6 +97,7 @@ class ExecuteProcess(Action):
             'sigterm_timeout', default=5),
         sigkill_timeout: SomeSubstitutionsType = LaunchConfiguration(
             'sigkill_timeout', default=5),
+        emulate_tty: bool = False,
         prefix: Optional[SomeSubstitutionsType] = None,
         output: Text = 'log',
         output_format: Text = '[{this.name}] {line}',
@@ -169,6 +176,12 @@ class ExecuteProcess(Action):
             as a string or a list of strings and Substitutions to be resolved
             at runtime, defaults to the LaunchConfiguration called
             'sigkill_timeout'
+        :param: emulate_tty emulate a tty (terminal), defaults to False, but can
+            be overridden with the LaunchConfiguration called 'emulate_tty',
+            the value of which is evaluated as true or false according to
+            :py:func:`evaluate_condition_expression`.
+            Throws :py:exception:`InvalidConditionExpressionError` if the
+            'emulate_tty' configuration does not represent a boolean.
         :param: prefix a set of commands/arguments to preceed the cmd, used for
             things like gdb/valgrind and defaults to the LaunchConfiguration
             called 'launch-prefix'
@@ -197,7 +210,7 @@ class ExecuteProcess(Action):
                 self.__env.append((
                     normalize_to_list_of_substitutions(key),
                     normalize_to_list_of_substitutions(value)))
-        self.__additional_env = None
+        self.__additional_env: Optional[List[Tuple[List[Substitution], List[Substitution]]]] = None
         if additional_env is not None:
             self.__additional_env = []
             for key, value in additional_env.items():
@@ -207,6 +220,7 @@ class ExecuteProcess(Action):
         self.__shell = shell
         self.__sigterm_timeout = normalize_to_list_of_substitutions(sigterm_timeout)
         self.__sigkill_timeout = normalize_to_list_of_substitutions(sigkill_timeout)
+        self.__emulate_tty = emulate_tty
         self.__prefix = normalize_to_list_of_substitutions(
             LaunchConfiguration('launch-prefix', default='') if prefix is None else prefix
         )
@@ -225,6 +239,91 @@ class ExecuteProcess(Action):
         self.__shutdown_received = False
         self.__stdout_buffer = io.StringIO()
         self.__stderr_buffer = io.StringIO()
+
+    @classmethod
+    def _parse_cmdline(
+        cls,
+        cmd: Text,
+        parser: Parser
+    ):
+        """
+        Parse text apt for command line execution.
+
+        :param: cmd a space (' ') delimited command line arguments list.
+           All found `TextSubstitution` items are split and added to the
+           list again as a `TextSubstitution`.
+        :returns: a list of command line arguments.
+        """
+        args = []
+        for arg in parser.parse_substitution(cmd):
+            if isinstance(arg, TextSubstitution):
+                text = arg.text
+                text = shlex.split(text)
+                text = [TextSubstitution(text=item) for item in text]
+                args.extend(text)
+            else:
+                args.append(arg)
+        return args
+
+    @classmethod
+    def parse(
+        cls,
+        entity: Entity,
+        parser: Parser,
+        ignore: Optional[List[str]] = None
+    ):
+        """
+        Return the `ExecuteProcess` action and kwargs for constructing it.
+
+        :param: ignore A list of arguments that should be ignored while parsing.
+            Intended for code reuse in derived classes (e.g.: launch_ros.actions.Node).
+        """
+        _, kwargs = super().parse(entity, parser)
+
+        if ignore is None:
+            ignore = []
+
+        if 'cmd' not in ignore:
+            kwargs['cmd'] = cls._parse_cmdline(entity.get_attr('cmd'), parser)
+
+        if 'cwd' not in ignore:
+            cwd = entity.get_attr('cwd', optional=True)
+            if cwd is not None:
+                kwargs['cwd'] = parser.parse_substitution(cwd)
+
+        if 'name' not in ignore:
+            name = entity.get_attr('name', optional=True)
+            if name is not None:
+                kwargs['name'] = parser.parse_substitution(name)
+
+        if 'prefix' not in ignore:
+            prefix = entity.get_attr('launch-prefix', optional=True)
+            if prefix is not None:
+                kwargs['prefix'] = parser.parse_substitution(prefix)
+
+        if 'output' not in ignore:
+            output = entity.get_attr('output', optional=True)
+            if output is not None:
+                kwargs['output'] = parser.escape_characters(output)
+
+        if 'shell' not in ignore:
+            shell = entity.get_attr('shell', data_type=bool, optional=True)
+            if shell is not None:
+                kwargs['shell'] = shell
+
+        if 'additional_env' not in ignore:
+            # Conditions won't be allowed in the `env` tag.
+            # If that feature is needed, `set_enviroment_variable` and
+            # `unset_enviroment_variable` actions should be used.
+            env = entity.get_attr('env', data_type=List[Entity], optional=True)
+            if env is not None:
+                env = {
+                    tuple(parser.parse_substitution(e.get_attr('name'))):
+                    parser.parse_substitution(e.get_attr('value')) for e in env
+                }
+                kwargs['additional_env'] = env
+
+        return cls, kwargs
 
     @property
     def output(self):
@@ -259,6 +358,10 @@ class ExecuteProcess(Action):
         self,
         context: LaunchContext
     ) -> Optional[LaunchDescription]:
+        typed_event = cast(ShutdownProcess, context.locals.event)
+        if not typed_event.process_matcher(self):
+            # this event whas not intended for this process
+            return None
         return self._shutdown_process(context, send_sigint=True)
 
     def __on_signal_process_event(
@@ -514,6 +617,16 @@ class ExecuteProcess(Action):
             self.__logger.info("process details: cmd=[{}], cwd='{}', custom_env?={}".format(
                 ', '.join(cmd), cwd, 'True' if env is not None else 'False'
             ))
+
+        emulate_tty = self.__emulate_tty
+        if 'emulate_tty' in context.launch_configurations:
+            emulate_tty = evaluate_condition_expression(
+                context,
+                normalize_to_list_of_substitutions(
+                    context.launch_configurations['emulate_tty']
+                ),
+            )
+
         try:
             transport, self._subprocess_protocol = await async_execute_process(
                 lambda **kwargs: self.__ProcessProtocol(
@@ -523,7 +636,7 @@ class ExecuteProcess(Action):
                 cwd=cwd,
                 env=env,
                 shell=self.__shell,
-                emulate_tty=False,
+                emulate_tty=emulate_tty,
                 stderr_to_stdout=False,
             )
         except Exception:
@@ -638,3 +751,8 @@ class ExecuteProcess(Action):
     def shell(self):
         """Getter for shell."""
         return self.__shell
+
+    @property
+    def prefix(self):
+        """Getter for prefix."""
+        return self.__prefix

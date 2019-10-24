@@ -6,16 +6,17 @@ from setuptools import setup
 
 setup(
     name='launch_testing',
-    version='0.8.7',
+    version='0.9.2',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/ament_index/resource_index/packages', ['resource/launch_testing']),
         ('lib/launch_testing', glob.glob('example_processes/**')),
         ('share/launch_testing', ['package.xml']),
-        ('share/launch_testing/examples', glob.glob('examples/[!_]**')),
+        ('share/launch_testing/examples', glob.glob('test/launch_testing/examples/[!_]**')),
     ],
     entry_points={
-        'console_scripts': ['launch_test=launch_testing.launch_test:main']
+        'console_scripts': ['launch_test=launch_testing.launch_test:main'],
+        'pytest11': ['launch = launch_testing.pytest.hooks'],
     },
     install_requires=['setuptools'],
     zip_safe=True,
