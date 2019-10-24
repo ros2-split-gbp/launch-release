@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
+from unittest import TestCase
+
 import pytest
 
 from ..loader import LoadTestsFromPythonModule
@@ -40,8 +43,11 @@ class LaunchTestItem(pytest.Item):
         launch_args = sum((
             args_set for args_set in self.config.getoption('--launch-args')
         ), [])
+        # Copy test runs' collection as it may be used more than
+        # once e.g. if pytest rerunfailures plugin is in use.
+        test_runs = copy.deepcopy(self.test_runs)
         runner = self.runner_cls(
-            test_runs=self.test_runs,
+            test_runs=test_runs,
             launch_file_arguments=launch_args,
             debug=self.config.getoption('verbose')
         )
@@ -64,7 +70,7 @@ class LaunchTestItem(pytest.Item):
                 )
                 for test_run, test_result in excinfo.value.results.items()
                 for test_case, _ in (test_result.errors + test_result.failures)
-                if not test_result.wasSuccessful()
+                if isinstance(test_case, TestCase) and not test_result.wasSuccessful()
             }) if excinfo.value.results else ''
         return super().repr_failure(excinfo)
 
