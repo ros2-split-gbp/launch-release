@@ -1,0 +1,12 @@
+Source: ros-eloquent-launch-testing-ament-cmake
+Section: misc
+Priority: optional
+Maintainer: Pete Baughman <pete.baughman@apex.ai>
+Build-Depends: debhelper (>= 9.0.0), ros-eloquent-ament-cmake, ros-eloquent-ament-cmake-copyright, ros-eloquent-launch-testing, ros-eloquent-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-eloquent-launch-testing-ament-cmake
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-eloquent-ament-cmake-test, ros-eloquent-launch-testing, ros-eloquent-python-cmake-module, ros-eloquent-ros-workspace
+Description: A package providing cmake functions for running launch tests from the build.
