@@ -1,3 +1,34 @@
+## launch (foxy) - 0.10.0-1
+
+The packages in the `launch` repository were released into the `foxy` distro by running `/usr/bin/bloom-release -r foxy launch` on `Fri, 24 Apr 2020 20:52:36 -0000`
+
+These packages were released:
+- `launch`
+- `launch_testing`
+- `launch_testing_ament_cmake`
+- `launch_xml`
+- `launch_yaml`
+
+These packages were explicitly ignored:
+- `test_launch_testing`
+
+Version of package(s) in repository `launch`:
+
+- upstream repository: https://github.com/ros2/launch.git
+- release repository: unknown
+- rosdistro version: `null`
+- old version: `null`
+- new version: `0.10.0-1`
+
+Versions of tools used:
+
+- bloom version: `0.9.3`
+- catkin_pkg version: `0.4.17`
+- rosdep version: `0.19.0`
+- rosdistro version: `0.8.1`
+- vcstools version: `0.1.42`
+
+
 ## launch (eloquent) - 0.9.6-1
 
 The packages in the `launch` repository were released into the `eloquent` distro by running `/usr/bin/bloom-release -e --rosdistro eloquent --track eloquent launch` on `Tue, 21 Jan 2020 21:16:47 -0000`
