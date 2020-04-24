@@ -22,6 +22,7 @@ import launch
 import launch.actions
 
 import launch_testing
+import launch_testing.actions
 from launch_testing.asserts import assertSequentialStdout
 
 import pytest
@@ -44,13 +45,13 @@ dut_process = launch.actions.ExecuteProcess(
 
 
 @pytest.mark.launch_test
-def generate_test_description(ready_fn):
+def generate_test_description():
 
     return launch.LaunchDescription([
         dut_process,
 
         # Start tests right away - no need to wait for anything
-        launch.actions.OpaqueFunction(function=lambda context: ready_fn()),
+        launch_testing.actions.ReadyToTest(),
     ])
 
 
@@ -61,10 +62,10 @@ class TestGoodProcess(unittest.TestCase):
     def test_count_to_four(self):
         # This will match stdout from any process.  In this example there is only one process
         # running
-        self.proc_output.assertWaitFor('Loop 1', timeout=10)
-        self.proc_output.assertWaitFor('Loop 2', timeout=10)
-        self.proc_output.assertWaitFor('Loop 3', timeout=10)
-        self.proc_output.assertWaitFor('Loop 4', timeout=10)
+        self.proc_output.assertWaitFor('Loop 1', timeout=10, stream='stdout')
+        self.proc_output.assertWaitFor('Loop 2', timeout=10, stream='stdout')
+        self.proc_output.assertWaitFor('Loop 3', timeout=10, stream='stdout')
+        self.proc_output.assertWaitFor('Loop 4', timeout=10, stream='stdout')
 
 
 @launch_testing.post_shutdown_test()
