@@ -2,6 +2,11 @@
 Changelog for package launch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.10.2 (2020-05-26)
+-------------------
+* Fix new flake8 errors. (`#420 <https://github.com/ros2/launch/issues/420>`_)
+* Contributors: Michel Hidalgo
+
 0.10.1 (2020-05-08)
 -------------------
 * removed deprecated loop parameter call (`#387 <https://github.com/ros2/launch/issues/387>`_) (`#410 <https://github.com/ros2/launch/issues/410>`_)
