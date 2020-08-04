@@ -38,11 +38,12 @@ class LaunchTestFailureRepr:
     """A `_pytest._code.code.ExceptionReprChain`-like object."""
 
     def __init__(self, failures):
-        max_length = max(
-            len(line)
+        lines = [
+            line
             for _, error_description in failures
             for line in error_description.splitlines()
-        )
+        ]
+        max_length = max(len(line) for line in lines) if lines else 3
         thick_sep_line = '=' * max_length
         thin_sep_line = '-' * max_length
         self._fulldescr = '\n' + '\n\n'.join([
@@ -110,7 +111,7 @@ class LaunchTestItem(pytest.Item):
     def repr_failure(self, excinfo):
         if isinstance(excinfo.value, LaunchTestFailure):
             return LaunchTestFailureRepr(failures=[
-                (f'{type(test_case).__name__}.{test_case._testMethodName}', formatted_error)
+                (test_case.id(), formatted_error)
                 for test_run, test_result in excinfo.value.results.items()
                 for test_case, formatted_error in (test_result.errors + test_result.failures)
                 if isinstance(test_case, TestCase) and not test_result.wasSuccessful()
