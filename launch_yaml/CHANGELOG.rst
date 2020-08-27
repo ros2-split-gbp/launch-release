@@ -2,18 +2,10 @@
 Changelog for package launch_yaml
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.12.0 (2020-08-18)
+0.10.3 (2020-08-27)
 -------------------
-
-0.11.1 (2020-08-14)
--------------------
-
-0.11.0 (2020-08-04)
--------------------
-* Use new type_utils functions (`#438 <https://github.com/ros2/launch/issues/438>`_)
-* Close YAML file when we're done. (`#415 <https://github.com/ros2/launch/issues/415>`_)
 * Add pytest.ini so local tests don't display warning (`#428 <https://github.com/ros2/launch/issues/428>`_)
-* Contributors: Chris Lalancette, Dan Rose, Ivan Santiago Paunovic
+* Contributors: Chris Lalancette
 
 0.10.2 (2020-05-26)
 -------------------

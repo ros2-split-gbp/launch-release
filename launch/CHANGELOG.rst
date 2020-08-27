@@ -2,31 +2,12 @@
 Changelog for package launch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.12.0 (2020-08-18)
+0.10.3 (2020-08-27)
 -------------------
-* Add new conditions for checking launch configuration values (`#453 <https://github.com/ros2/launch/issues/453>`_)
-* Contributors: Jacob Perron
-
-0.11.1 (2020-08-14)
--------------------
-* Refactor launch service run_async loop to wait on futures and queued events (`#449 <https://github.com/ros2/launch/issues/449>`_)
-* Fix documentation typo (`#446 <https://github.com/ros2/launch/issues/446>`_)
-* Fix type_utils.extract_type() function. (`#445 <https://github.com/ros2/launch/issues/445>`_)
-* Contributors: Jacob Perron, Michel Hidalgo
-
-0.11.0 (2020-08-04)
--------------------
-* Handle empty strings in type coercion. (`#443 <https://github.com/ros2/launch/issues/443>`_)
-* Consolidate type_utils in a way that can be reused in substitution results that need to be coerced to a specific type (`#438 <https://github.com/ros2/launch/issues/438>`_)
-* Delete unnecessary loading of 'launch.frontend.interpolate_substitution_method' entry point that was never used (`#434 <https://github.com/ros2/launch/issues/434>`_)
-* Avoid side effect, defer until needed (`#432 <https://github.com/ros2/launch/issues/432>`_)
-* Remove pkg_resources, replace it with the use of the more modern importlib* libraries. (`#430 <https://github.com/ros2/launch/issues/430>`_)
-* Remove the asyncio.wait loop parameter. (`#429 <https://github.com/ros2/launch/issues/429>`_)
+* Add new conditions for checking launch configuration values (`#453 <https://github.com/ros2/launch/issues/453>`_) (`#457 <https://github.com/ros2/launch/issues/457>`_)
+* Refactor launch service run_async loop to wait on futures and queued events (`#449 <https://github.com/ros2/launch/issues/449>`_) (`#455 <https://github.com/ros2/launch/issues/455>`_)
 * Add pytest.ini so local tests don't display warning (`#428 <https://github.com/ros2/launch/issues/428>`_)
-* Defer shutdown if already running (`#427 <https://github.com/ros2/launch/issues/427>`_)
-* Add respawn and respawn_delay support (`#426 <https://github.com/ros2/launch/issues/426>`_)
-* Fix up parser.py (`#414 <https://github.com/ros2/launch/issues/414>`_)
-* Contributors: CHEN, Chris Lalancette, Dan Rose, Dirk Thomas, Ivan Santiago Paunovic, Jorge Perez, Michel Hidalgo
+* Contributors: Chris Lalancette, Jacob Perron
 
 0.10.2 (2020-05-26)
 -------------------
