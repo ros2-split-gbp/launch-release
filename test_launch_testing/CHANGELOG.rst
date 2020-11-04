@@ -2,9 +2,20 @@
 Changelog for package test_launch_testing
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.10.3 (2020-08-27)
+0.13.0 (2020-11-04)
 -------------------
-* Add pytest.ini to test_launch_testing so tests succeed locally (`#431 <https://github.com/ros2/launch/issues/431>`_)
+* Update package maintainers (`#465 <https://github.com/ros2/launch/issues/465>`_)
+* Contributors: Michel Hidalgo
+
+0.12.0 (2020-08-18)
+-------------------
+
+0.11.1 (2020-08-14)
+-------------------
+
+0.11.0 (2020-08-04)
+-------------------
+* Add pytest.ini to test_launch_testing so tests succeed locally. (`#431 <https://github.com/ros2/launch/issues/431>`_)
 * Contributors: Chris Lalancette
 
 0.10.2 (2020-05-26)

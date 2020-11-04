@@ -2,10 +2,24 @@
 Changelog for package launch_xml
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.10.3 (2020-08-27)
+0.13.0 (2020-11-04)
 -------------------
+* Validate unparsed attributes and subentities in launch_xml and launch_yaml (`#468 <https://github.com/ros2/launch/issues/468>`_)
+* Add test for launch.actions.TimerAction (`#470 <https://github.com/ros2/launch/issues/470>`_)
+* Update package maintainers (`#465 <https://github.com/ros2/launch/issues/465>`_)
+* Contributors: Ivan Santiago Paunovic, Michel Hidalgo
+
+0.12.0 (2020-08-18)
+-------------------
+
+0.11.1 (2020-08-14)
+-------------------
+
+0.11.0 (2020-08-04)
+-------------------
+* Use new type_utils functions (`#438 <https://github.com/ros2/launch/issues/438>`_)
 * Add pytest.ini so local tests don't display warning (`#428 <https://github.com/ros2/launch/issues/428>`_)
-* Contributors: Chris Lalancette
+* Contributors: Chris Lalancette, Ivan Santiago Paunovic
 
 0.10.2 (2020-05-26)
 -------------------
