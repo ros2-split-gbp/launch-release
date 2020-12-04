@@ -1,0 +1,12 @@
+Source: ros-eloquent-launch-testing
+Section: misc
+Priority: optional
+Maintainer: Pete Baughman <pete.baughman@apex.ai>
+Build-Depends: debhelper (>= 9.0.0), python3-mock, python3-pytest, ros-eloquent-ament-copyright, ros-eloquent-ament-flake8, ros-eloquent-ament-pep257, ros-eloquent-launch, ros-eloquent-ros-workspace, python3-all, python3-setuptools
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-eloquent-launch-testing
+Architecture: any
+Depends: ${python3:Depends}, ${misc:Depends}, ros-eloquent-ament-index-python, ros-eloquent-launch, ros-eloquent-osrf-pycommon, ros-eloquent-ros-workspace
+Description: A package to create tests which involve launch files and multiple processes.
