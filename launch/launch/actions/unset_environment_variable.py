@@ -38,7 +38,7 @@ class UnsetEnvironmentVariable(Action):
         name: SomeSubstitutionsType,
         **kwargs
     ) -> None:
-        """Create an UnsetEnvironmentVariable action."""
+        """Constructor."""
         super().__init__(**kwargs)
         self.__name = normalize_to_list_of_substitutions(name)
 

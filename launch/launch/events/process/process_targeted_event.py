@@ -30,7 +30,7 @@ class ProcessTargetedEvent(Event):
 
     def __init__(self, *, process_matcher: Callable[['ExecuteProcess'], bool]) -> None:
         """
-        Create a ProcessTargetedEvent.
+        Constructor.
 
         Some standard matchers are also available, like:
 

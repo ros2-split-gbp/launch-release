@@ -34,7 +34,7 @@ class AnyLaunchDescriptionSource(LaunchDescriptionSource):
         launch_file_path: SomeSubstitutionsType,
     ) -> None:
         """
-        Create an AnyLaunchDescriptionSource.
+        Constructor.
 
         If a relative path is passed, it will be relative to the current working
         directory wherever the launch file was run from.

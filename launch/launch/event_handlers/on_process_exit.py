@@ -50,7 +50,7 @@ class OnProcessExit(BaseEventHandler):
                        Callable[[ProcessExited, LaunchContext], Optional[SomeActionsType]]],
         **kwargs
     ) -> None:
-        """Create an OnProcessExit event handler."""
+        """Constructor."""
         from ..actions import ExecuteProcess  # noqa
         if not isinstance(target_action, (ExecuteProcess, type(None))):
             raise TypeError("OnProcessExit requires an 'ExecuteProcess' action as the target")

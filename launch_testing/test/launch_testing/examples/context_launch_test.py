@@ -22,7 +22,6 @@ import launch
 import launch.actions
 
 import launch_testing
-import launch_testing.actions
 from launch_testing.asserts import assertSequentialStdout
 
 import pytest
@@ -46,14 +45,14 @@ def get_test_process_action():
 # adding them to the test context, it's not necessary to scope them at the module level like in
 # the good_proc.test.py example
 @pytest.mark.launch_test
-def generate_test_description():
+def generate_test_description(ready_fn):
     dut_process = get_test_process_action()
 
     ld = launch.LaunchDescription([
         dut_process,
 
         # Start tests right away - no need to wait for anything
-        launch_testing.actions.ReadyToTest(),
+        launch.actions.OpaqueFunction(function=lambda context: ready_fn()),
     ])
 
     # Items in this dictionary will be added to the test cases as an attribute based on
@@ -68,20 +67,20 @@ def generate_test_description():
 
 class TestProcOutput(unittest.TestCase):
 
-    def test_process_output(self, launch_service, proc_info, proc_output, dut):
+    def test_process_output(self, dut):
         # We can use the 'dut' argument here because it's part of the test context
         # returned by `generate_test_description`  It's not necessary for every
         # test to use every piece of the context
-        proc_output.assertWaitFor('Loop 1', process=dut, timeout=10, stream='stdout')
+        self.proc_output.assertWaitFor('Loop 1', process=dut, timeout=10)
 
 
 @launch_testing.post_shutdown_test()
 class TestProcessOutput(unittest.TestCase):
 
-    def test_full_output(self, proc_output, dut):
+    def test_full_output(self, dut):
         # Same as the test_process_output test. launch_testing binds the value of
         # 'dut' from the test_context to the test before it runs
-        with assertSequentialStdout(proc_output, process=dut) as cm:
+        with assertSequentialStdout(self.proc_output, process=dut) as cm:
             cm.assertInStdout('Starting Up')
             if os.name != 'nt':
                 # On Windows, process termination is always forced

@@ -262,10 +262,7 @@ class LaunchTestRunner(object):
                 continue
             except _LaunchDiedException:
                 # The most likely cause was ctrl+c, so we'll abort the test run
-                results[run] = FailResult(
-                    test_run=run,
-                    message='Launch stopped before the active tests finished.'
-                )
+                results[run] = FailResult()
                 break
 
         return results

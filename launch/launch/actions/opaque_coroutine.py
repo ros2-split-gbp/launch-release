@@ -69,7 +69,7 @@ class OpaqueCoroutine(Action):
         ignore_context: bool = False,
         **left_over_kwargs
     ) -> None:
-        """Create an OpaqueCoroutine action."""
+        """Constructor."""
         super().__init__(**left_over_kwargs)
         if not asyncio.iscoroutinefunction(coroutine):
             raise TypeError(

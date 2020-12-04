@@ -29,7 +29,7 @@ class ProcessExited(RunningProcessEvent):
         **kwargs
     ) -> None:
         """
-        Create a ProcessExited event.
+        Constructor.
 
         Unmatched keyword arguments are passed to RunningProcessEvent, see it
         for details on those arguments.

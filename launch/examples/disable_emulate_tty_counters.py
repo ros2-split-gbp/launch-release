@@ -27,7 +27,7 @@ import sys
 from typing import cast
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))  # noqa
 
-import launch  # noqa: E402
+import launch
 
 
 def generate_launch_description():

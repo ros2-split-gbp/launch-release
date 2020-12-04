@@ -17,9 +17,8 @@ from typing import Callable
 from typing import cast
 from typing import List  # noqa
 from typing import Optional
+from typing import overload
 from typing import Text
-from typing import TYPE_CHECKING
-from typing import Union
 
 from ..event import Event
 from ..event_handler import EventHandler
@@ -27,9 +26,6 @@ from ..events import ExecutionComplete
 from ..launch_context import LaunchContext
 from ..launch_description_entity import LaunchDescriptionEntity
 from ..some_actions_type import SomeActionsType
-
-if TYPE_CHECKING:
-    from .. import Action  # noqa
 
 
 class OnExecutionComplete(EventHandler):
@@ -40,14 +36,29 @@ class OnExecutionComplete(EventHandler):
     or to handle them all.
     """
 
+    @overload
+    def __init__(
+        self, *,
+        target_action: Optional['Action'] = None,
+        on_completion: SomeActionsType,
+        **kwargs
+    ) -> None:
+        """Overload which takes just actions."""
+        ...
+
+    @overload  # noqa: F811
     def __init__(
         self,
         *,
         target_action: Optional['Action'] = None,
-        on_completion: Union[SomeActionsType, Callable[[int], Optional[SomeActionsType]]],
+        on_completion: Callable[[int], Optional[SomeActionsType]],
         **kwargs
     ) -> None:
-        """Create an OnExecutionComplete event handler."""
+        """Overload which takes a callable to handle completion."""
+        ...
+
+    def __init__(self, *, target_action=None, on_completion, **kwargs) -> None:  # noqa: F811
+        """Constructor."""
         from ..action import Action  # noqa
         if not isinstance(target_action, (Action, type(None))):
             raise ValueError("OnExecutionComplete requires an 'Action' as the target")

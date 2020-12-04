@@ -6,7 +6,7 @@ from setuptools import setup
 
 setup(
     name='launch_testing',
-    version='0.12.0',
+    version='0.9.7',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/ament_index/resource_index/packages', ['resource/launch_testing']),
@@ -22,8 +22,8 @@ setup(
     zip_safe=True,
     author='Pete Baughman, Dirk Thomas, Esteve Fernandez',
     author_email='pete.baughman@apex.ai, dthomas@osrfoundation.org',
-    maintainer='William Woodall, Michel Hidalgo',
-    maintainer_email='william@osrfoundation.org, michel@ekumenlabs.com',
+    maintainer='Pete Baughman',
+    maintainer_email='pete.baughman@apex.ai',
     url='https://github.com/ros2/launch',
     download_url='https://github.com/ros2/launch/releases',
     keywords=['ROS'],

@@ -23,27 +23,28 @@ import launch.actions
 import launch.substitutions
 
 import launch_testing
-import launch_testing.actions
 import launch_testing.util
 
 import pytest
 
 
-@pytest.mark.launch_test
-def generate_test_description():
-    dut_process = launch.actions.ExecuteProcess(
-        cmd=[
-            sys.executable,
-            os.path.join(
-                ament_index_python.get_package_prefix('launch_testing'),
-                'lib/launch_testing',
-                'terminating_proc',
-            ),
+dut_process = launch.actions.ExecuteProcess(
+    cmd=[
+        sys.executable,
+        os.path.join(
+            ament_index_python.get_package_prefix('launch_testing'),
+            'lib/launch_testing',
+            'terminating_proc',
+        ),
 
-            # Arguments
-            launch.substitutions.LaunchConfiguration('dut_arg')
-        ],
-    )
+        # Arguments
+        launch.substitutions.LaunchConfiguration('dut_arg')
+    ],
+)
+
+
+@pytest.mark.launch_test
+def generate_test_description(ready_fn):
 
     return launch.LaunchDescription([
 
@@ -62,37 +63,37 @@ def generate_test_description():
         # provides a simple launch action that does this:
         launch_testing.util.KeepAliveProc(),
 
-        launch_testing.actions.ReadyToTest()
-    ]), {'dut_process': dut_process}
+        launch.actions.OpaqueFunction(function=lambda context: ready_fn())
+    ])
 
 
 class TestTerminatingProcessStops(unittest.TestCase):
 
-    def test_proc_terminates(self, proc_info, dut_process):
-        proc_info.assertWaitForShutdown(process=dut_process, timeout=10)
+    def test_proc_terminates(self):
+        self.proc_info.assertWaitForShutdown(process=dut_process, timeout=10)
 
 
 @launch_testing.post_shutdown_test()
 class TestProcessOutput(unittest.TestCase):
 
-    def test_ran_with_arg(self, dut_process):
+    def test_ran_with_arg(self):
         self.assertNotIn(
             'default',
             dut_process.process_details['cmd'],
             'Try running: launch_test test_with_args.test.py dut_arg:=arg'
         )
 
-    def test_arg_printed_in_output(self, proc_output, test_args, dut_process):
+    def test_arg_printed_in_output(self):
         launch_testing.asserts.assertInStdout(
-            proc_output,
-            test_args['dut_arg'],
+            self.proc_output,
+            self.test_args['dut_arg'],
             dut_process
         )
 
-    def test_default_not_printed(self, proc_output, dut_process):
+    def test_default_not_printed(self):
         with self.assertRaises(AssertionError):
             launch_testing.asserts.assertInStdout(
-                proc_output,
+                self.proc_output,
                 'default',
                 dut_process
             )

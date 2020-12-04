@@ -28,7 +28,7 @@ class TimerEvent(Event):
     name = 'launch.events.TimerEvent'
 
     def __init__(self, *, timer_action: 'TimerAction') -> None:
-        """Create a TimerEvent."""
+        """Constructor."""
         self.__timer_action = timer_action
 
     @property

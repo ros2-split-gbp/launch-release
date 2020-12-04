@@ -24,7 +24,7 @@ class ProcessStdin(ProcessIO):
 
     def __init__(self, *, text: bytes, **kwargs) -> None:
         """
-        Create a ProcessStdin event.
+        Constructor.
 
         Unmatched keyword arguments are passed to ProcessEvent, see it for
         details on those arguments.

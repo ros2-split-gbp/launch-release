@@ -15,20 +15,9 @@
 import functools
 import inspect
 import itertools
-import os
 import unittest
-import warnings
 
 from .actions import ReadyToTest
-
-
-# Patch up the warnings module to streamline the warning messages.  See
-# https://docs.python.org/3/library/warnings.html#warnings.showwarning
-def slim_formatwarning(msg, *args, **kwargs):
-    return 'Warning: ' + str(msg) + os.linesep
-
-
-warnings.formatwarning = slim_formatwarning
 
 
 def _normalize_ld(launch_description_fn):
@@ -46,15 +35,8 @@ def _normalize_ld(launch_description_fn):
         fn_args = inspect.getfullargspec(launch_description_fn)
 
         if 'ready_fn' in fn_args.args + fn_args.kwonlyargs:
-            # This is an old-style launch_description function which expects ready_fn to be passed
+            # This is an old-style launch_description function which epects ready_fn to be passed
             # in to the function
-            # This type of launch description will be deprecated in the future.  Warn about it
-            # here
-            warnings.warn(
-                'Passing ready_fn as an argument to generate_test_description will '
-                'be removed in a future release.  Include a launch_testing.actions.ReadyToTest '
-                'action in the LaunchDescription instead.'
-            )
             return normalize(launch_description_fn(**kwargs))
         else:
             # This is a new-style launch_description which should contain a ReadyToTest action
@@ -119,13 +101,6 @@ class TestRun:
                 new_name = tc._testMethodName + self._format_params()
                 setattr(tc, '_testMethodName', new_name)
                 setattr(tc, new_name, test_method)
-
-        # Disable cleanup of test cases once they are run
-        for tc in itertools.chain(
-            _iterate_test_suites(pre_shutdown_tests),
-            _iterate_test_suites(post_shutdown_tests)
-        ):
-            tc._removeTestAtIndex = lambda *args, **kwargs: None
 
     @property
     def markers(self):
@@ -265,23 +240,14 @@ def _partially_bind_matching_args(unbound_function, arg_candidates):
 
 
 def _give_attribute_to_tests(data, attr_name, test_suite):
-
-    def _warn_getter(self):
-        if not hasattr(self, '__warned'):
-            warnings.warn(
-                'Automatically adding attributes like self.{0} '
-                'to the test class will be deprecated in a future release.  '
-                'Instead, add {0} to the test method argument list to '
-                'access the test object you need'.format(attr_name)
-            )
-            setattr(self, '__warned', True)
-
-        return data
+    # Test suites can contain other test suites which will eventually contain
+    # the actual test classes to run.  This function will recursively drill down until
+    # we find the actual tests and give the tests a reference to the process
 
     # The effect of this is that every test will have `self.attr_name` available to it so that
     # it can interact with ROS2 or the process exit coes, or IO or whatever data we want
-    for cls in _iterate_test_classes_in_test_suite(test_suite):
-        setattr(cls, attr_name, property(fget=_warn_getter))
+    for test in _iterate_tests_in_test_suite(test_suite):
+        setattr(test, attr_name, data)
 
 
 def _iterate_test_classes_in_test_suite(test_suite):
@@ -290,18 +256,6 @@ def _iterate_test_classes_in_test_suite(test_suite):
         if t.__class__ not in classes:
             classes.append(t.__class__)
             yield t.__class__
-
-
-def _iterate_test_suites(test_suite):
-    try:
-        iter(test_suite)
-    except TypeError:
-        pass
-    else:
-        if isinstance(test_suite, unittest.TestSuite):
-            yield test_suite
-        for test in test_suite:
-            yield from _iterate_test_suites(test)
 
 
 def _iterate_tests_in_test_suite(test_suite):

@@ -22,7 +22,7 @@ from .test import Test
 
 
 class PyTest(Test):
-    """Action that runs a Pytest test."""
+    """Action that runs a GTest."""
 
     def __init__(
         self,
@@ -31,7 +31,7 @@ class PyTest(Test):
         **kwargs
     ) -> None:
         """
-        Create a PyTest test action.
+        Constructor.
 
         timeout argument is passed to :class:`launch_testing.Test`.
         The other arguments are passed to :class:`launch.ExecuteProcess`, so

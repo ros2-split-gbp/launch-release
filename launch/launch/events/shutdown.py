@@ -25,7 +25,7 @@ class Shutdown(Event):
     name = 'launch.events.Shutdown'
 
     def __init__(self, *, reason: Text = 'reason not given', due_to_sigint: bool = False) -> None:
-        """Create a Shutdown event."""
+        """Constructor."""
         self.__reason = reason
         self.__due_to_sigint = due_to_sigint
 

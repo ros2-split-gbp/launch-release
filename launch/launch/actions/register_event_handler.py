@@ -14,15 +14,9 @@
 
 """Module for the RegisterEventHandler action."""
 
-from typing import Iterable
-from typing import List
-from typing import Text
-from typing import Tuple
-
 from ..action import Action
 from ..event_handler import BaseEventHandler
 from ..launch_context import LaunchContext
-from ..launch_description_entity import LaunchDescriptionEntity
 
 
 class RegisterEventHandler(Action):
@@ -39,7 +33,7 @@ class RegisterEventHandler(Action):
     """
 
     def __init__(self, event_handler: BaseEventHandler, **kwargs) -> None:
-        """Create a RegisterEventHandler action."""
+        """Constructor."""
         super().__init__(**kwargs)
         self.__event_handler = event_handler
 
@@ -51,12 +45,3 @@ class RegisterEventHandler(Action):
     def execute(self, context: LaunchContext):
         """Execute the action."""
         context.register_event_handler(self.__event_handler)
-
-    def describe_conditional_sub_entities(self) -> List[Tuple[
-        Text,  # text description of the condition
-        Iterable[LaunchDescriptionEntity],  # list of conditional sub-entities
-    ]]:
-        event_handler_description = self.__event_handler.describe()
-        return [
-            (event_handler_description[0], event_handler_description[1])
-        ] if event_handler_description[1] else []

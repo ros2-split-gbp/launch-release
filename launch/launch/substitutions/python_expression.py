@@ -36,7 +36,7 @@ class PythonExpression(Substitution):
     """
 
     def __init__(self, expression: SomeSubstitutionsType) -> None:
-        """Create a PythonExpression substitution."""
+        """Constructor."""
         super().__init__()
 
         ensure_argument_type(

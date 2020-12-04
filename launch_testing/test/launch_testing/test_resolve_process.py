@@ -21,7 +21,6 @@ import ament_index_python
 import launch.actions
 import launch.substitutions
 import launch_testing
-import launch_testing.actions
 from launch_testing.loader import LoadTestsFromPythonModule
 from launch_testing.test_runner import LaunchTestRunner
 import launch_testing.util
@@ -87,7 +86,7 @@ class TestStringProcessResolution(unittest.TestCase):
         proc_env = os.environ.copy()
         proc_env['PYTHONUNBUFFERED'] = '1'
 
-        def generate_test_description():
+        def generate_test_description(ready_fn):
             no_arg_proc = launch.actions.ExecuteProcess(
                 cmd=[sys.executable],
                 env=proc_env
@@ -107,7 +106,7 @@ class TestStringProcessResolution(unittest.TestCase):
                 no_arg_proc,
                 one_arg_proc,
                 two_arg_proc,
-                launch_testing.actions.ReadyToTest(),
+                launch.actions.OpaqueFunction(function=lambda ctx: ready_fn())
             ])
 
             return (ld, locals())
@@ -122,9 +121,9 @@ class TestStringProcessResolution(unittest.TestCase):
                                no_arg_proc,
                                one_arg_proc,
                                two_arg_proc):
-                proc_output.assertWaitFor('--one-arg', stream='stdout')
-                proc_output.assertWaitFor('--two-arg', stream='stdout')
-                proc_output.assertWaitFor('arg_two', stream='stdout')
+                proc_output.assertWaitFor('--one-arg')
+                proc_output.assertWaitFor('--two-arg')
+                proc_output.assertWaitFor('arg_two')
 
                 arr.append(proc_info)
 

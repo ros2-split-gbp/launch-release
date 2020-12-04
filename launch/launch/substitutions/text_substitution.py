@@ -24,7 +24,7 @@ class TextSubstitution(Substitution):
     """Substitution that wraps a single string text."""
 
     def __init__(self, *, text: Text) -> None:
-        """Create a TextSubstitution."""
+        """Constructor."""
         super().__init__()
 
         if not isinstance(text, Text):

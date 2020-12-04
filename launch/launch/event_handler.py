@@ -40,7 +40,7 @@ class BaseEventHandler:
 
     def __init__(self, *, matcher: Callable[[Event], bool], handle_once: bool = False):
         """
-        Create a BaseEventHandler.
+        Constructor.
 
         :param: matcher is a callable that takes an event and returns True if
             the event should be handled by this event handler, False otherwise.
@@ -110,7 +110,7 @@ class EventHandler(BaseEventHandler):
         handle_once: bool = False
     ) -> None:
         """
-        Create an EventHandler.
+        Constructor.
 
         :param: matcher is a callable that takes an event and returns True if
             the event should be handled by this event handler, False otherwise.

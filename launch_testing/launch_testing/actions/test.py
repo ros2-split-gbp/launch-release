@@ -40,7 +40,7 @@ class Test(ExecuteProcess):
         **kwargs
     ) -> None:
         """
-        Create a Test action.
+        Constructor.
 
         Many arguments are passed to :class:`launch.ExecuteProcess`, so
         see the documentation for the class for additional details.

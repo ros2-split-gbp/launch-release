@@ -37,7 +37,7 @@ class LaunchDescriptionSource:
         method: str = 'unspecified mechanism from a script',
     ) -> None:
         """
-        Create a LaunchDescriptionSource.
+        Constructor.
 
         For example, loading a file called ``example.launch.py`` for inclusion
         might end up setting `location` to ``/path/to/example.launch.py`` and

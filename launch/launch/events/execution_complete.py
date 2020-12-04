@@ -24,7 +24,7 @@ class ExecutionComplete(Event):
     name = 'launch.events.ExecutionComplete'
 
     def __init__(self, *, action: Action) -> None:
-        """Create an ExecutionComplete event."""
+        """Constructor."""
         self.__action = action
 
     @property

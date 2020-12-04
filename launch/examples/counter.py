@@ -23,7 +23,7 @@ import time
 
 
 def main(argv=sys.argv[1:]):
-    """Run Counter script."""
+    """Main."""
     parser = argparse.ArgumentParser(
         description=(
             'Simple program outputting a counter. '

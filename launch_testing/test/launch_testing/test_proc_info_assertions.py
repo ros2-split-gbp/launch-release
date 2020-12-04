@@ -20,14 +20,13 @@ import ament_index_python
 import launch
 import launch.actions
 import launch.events.process
-import launch_testing.actions
 from launch_testing.test_runner import LaunchTestRunner
 import launch_testing.util
 
 
 def test_wait_for_shutdown(source_test_loader):
 
-    def generate_test_description():
+    def generate_test_description(ready_fn):
         TEST_PROC_PATH = os.path.join(
             ament_index_python.get_package_prefix('launch_testing'),
             'lib/launch_testing',
@@ -53,7 +52,7 @@ def test_wait_for_shutdown(source_test_loader):
                     )
                 ]
             ),
-            launch_testing.actions.ReadyToTest(),
+            launch.actions.OpaqueFunction(function=lambda context: ready_fn())
         ]), {'good_process': good_process}
 
     # This is kind of a weird test-within-a-test, but it's the easiest way to get
@@ -83,7 +82,7 @@ def test_wait_for_shutdown(source_test_loader):
 
 def test_wait_for_startup(source_test_loader):
 
-    def generate_test_description():
+    def generate_test_description(ready_fn):
         TEST_PROC_PATH = os.path.join(
             ament_index_python.get_package_prefix('launch_testing'),
             'lib/launch_testing',
@@ -100,7 +99,7 @@ def test_wait_for_startup(source_test_loader):
                 period=10.0,
                 actions=[good_process]
             ),
-            launch_testing.actions.ReadyToTest(),
+            launch.actions.OpaqueFunction(function=lambda context: ready_fn())
         ]), {'good_process': good_process}
 
     # This is kind of a weird test-within-a-test, but it's the easiest way to get

@@ -27,17 +27,17 @@ import sys
 from typing import cast
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))  # noqa
 
-import launch  # noqa: E402
-from launch import LaunchDescription  # noqa: E402
-from launch import LaunchIntrospector  # noqa: E402
-from launch import LaunchService  # noqa: E402
-import launch.actions  # noqa: E402
-import launch.events  # noqa: E402
-import launch.substitutions  # noqa: E402
+import launch
+from launch import LaunchDescription
+from launch import LaunchIntrospector
+from launch import LaunchService
+import launch.actions
+import launch.events
+import launch.substitutions
 
 
 def main(argv=sys.argv[1:]):
-    """Run Counter via launch."""
+    """Main."""
     # Configure rotating logs.
     launch.logging.launch_config.log_handler_factory = \
         lambda path, encoding=None: launch.logging.handlers.RotatingFileHandler(

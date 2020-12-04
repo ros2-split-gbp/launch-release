@@ -24,7 +24,7 @@ class IncludeLaunchDescription(Event):
     name = 'launch.events.IncludeLaunchDescription'
 
     def __init__(self, launch_description: LaunchDescription) -> None:
-        """Create an IncludeLaunchDescription event."""
+        """Constructor."""
         self.__launch_description = launch_description
 
     @property
