@@ -2,47 +2,18 @@
 Changelog for package launch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.14.0 (2020-12-08)
+0.10.4 (2020-12-08)
 -------------------
-* print stderr message when command failed (`#474 <https://github.com/ros2/launch/issues/474>`_)
-* Add frontend support for LogInfo action (`#467 <https://github.com/ros2/launch/issues/467>`_)
-* Contributors: Jacob Perron, Takamasa Horibe
+* Fix dollar symbols in substitution grammar (`#461 <https://github.com/ros2/launch/issues/461>`_) (`#472 <https://github.com/ros2/launch/issues/472>`_)
+* Delete unnecessary loading of 'launch.frontend.interpolate_substitution_method' entry point that was never used (`#434 <https://github.com/ros2/launch/issues/434>`_) (`#463 <https://github.com/ros2/launch/issues/463>`_)
+* Contributors: Ivan Santiago Paunovic, Jacob Perron
 
-0.13.0 (2020-11-04)
+0.10.3 (2020-08-27)
 -------------------
-* Validate unparsed attributes and subentities in launch_xml and launch_yaml (`#468 <https://github.com/ros2/launch/issues/468>`_)
-* Fix bug in launch.actions.TimerAction.parse() (`#470 <https://github.com/ros2/launch/issues/470>`_)
-* Allow configuring logging directory through environment variables (`#460 <https://github.com/ros2/launch/issues/460>`_)
-* Update package maintainers (`#465 <https://github.com/ros2/launch/issues/465>`_)
-* Expose Timer action in launch xml (`#462 <https://github.com/ros2/launch/issues/462>`_)
-* Fix dollar symbols in substitution grammar (`#461 <https://github.com/ros2/launch/issues/461>`_)
-* Contributors: Christophe Bedard, Ivan Santiago Paunovic, Michel Hidalgo
-
-0.12.0 (2020-08-18)
--------------------
-* Add new conditions for checking launch configuration values (`#453 <https://github.com/ros2/launch/issues/453>`_)
-* Contributors: Jacob Perron
-
-0.11.1 (2020-08-14)
--------------------
-* Refactor launch service run_async loop to wait on futures and queued events (`#449 <https://github.com/ros2/launch/issues/449>`_)
-* Fix documentation typo (`#446 <https://github.com/ros2/launch/issues/446>`_)
-* Fix type_utils.extract_type() function. (`#445 <https://github.com/ros2/launch/issues/445>`_)
-* Contributors: Jacob Perron, Michel Hidalgo
-
-0.11.0 (2020-08-04)
--------------------
-* Handle empty strings in type coercion. (`#443 <https://github.com/ros2/launch/issues/443>`_)
-* Consolidate type_utils in a way that can be reused in substitution results that need to be coerced to a specific type (`#438 <https://github.com/ros2/launch/issues/438>`_)
-* Delete unnecessary loading of 'launch.frontend.interpolate_substitution_method' entry point that was never used (`#434 <https://github.com/ros2/launch/issues/434>`_)
-* Avoid side effect, defer until needed (`#432 <https://github.com/ros2/launch/issues/432>`_)
-* Remove pkg_resources, replace it with the use of the more modern importlib* libraries. (`#430 <https://github.com/ros2/launch/issues/430>`_)
-* Remove the asyncio.wait loop parameter. (`#429 <https://github.com/ros2/launch/issues/429>`_)
+* Add new conditions for checking launch configuration values (`#453 <https://github.com/ros2/launch/issues/453>`_) (`#457 <https://github.com/ros2/launch/issues/457>`_)
+* Refactor launch service run_async loop to wait on futures and queued events (`#449 <https://github.com/ros2/launch/issues/449>`_) (`#455 <https://github.com/ros2/launch/issues/455>`_)
 * Add pytest.ini so local tests don't display warning (`#428 <https://github.com/ros2/launch/issues/428>`_)
-* Defer shutdown if already running (`#427 <https://github.com/ros2/launch/issues/427>`_)
-* Add respawn and respawn_delay support (`#426 <https://github.com/ros2/launch/issues/426>`_)
-* Fix up parser.py (`#414 <https://github.com/ros2/launch/issues/414>`_)
-* Contributors: CHEN, Chris Lalancette, Dan Rose, Dirk Thomas, Ivan Santiago Paunovic, Jorge Perez, Michel Hidalgo
+* Contributors: Chris Lalancette, Jacob Perron
 
 0.10.2 (2020-05-26)
 -------------------

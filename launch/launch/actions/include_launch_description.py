@@ -90,8 +90,6 @@ class IncludeLaunchDescription(Action):
                 )
                 for e in args
             ]
-            for e in args:
-                e.assert_entity_completely_parsed()
         return cls, kwargs
 
     @property
