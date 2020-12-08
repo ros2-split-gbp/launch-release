@@ -2,11 +2,36 @@
 Changelog for package launch_testing_ament_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.9.7 (2020-12-04)
-------------------
+0.14.0 (2020-12-08)
+-------------------
 
-0.9.6 (2020-01-21)
-------------------
+0.13.0 (2020-11-04)
+-------------------
+* Update package maintainers (`#465 <https://github.com/ros2/launch/issues/465>`_)
+* Add bsd license to launch due to files from roslaunch (`#456 <https://github.com/ros2/launch/issues/456>`_)
+* Contributors: Michel Hidalgo, William Woodall
+
+0.12.0 (2020-08-18)
+-------------------
+
+0.11.1 (2020-08-14)
+-------------------
+* Use launch_test CMake target as output file basename (`#448 <https://github.com/ros2/launch/issues/448>`_)
+* Contributors: Michel Hidalgo
+
+0.11.0 (2020-08-04)
+-------------------
+* Find Python debug interpreter on Windows (`#437 <https://github.com/ros2/launch/issues/437>`_)
+* Contributors: Dirk Thomas
+
+0.10.2 (2020-05-26)
+-------------------
+
+0.10.1 (2020-05-08)
+-------------------
+
+0.10.0 (2020-04-24)
+-------------------
 
 0.9.5 (2019-11-13)
 ------------------

@@ -2,10 +2,13 @@
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
   <name>launch_xml</name>
-  <version>0.9.7</version>
+  <version>0.14.0</version>
   <description>XML frontend for the launch package.</description>
-  <maintainer email="ivanpauno@ekumenlabs.com">Ivan Paunovic</maintainer>
+  <maintainer email="william@osrfoundation.org">William Woodall</maintainer>
+  <maintainer email="michel@ekumenlabs.com">Michel Hidalgo</maintainer>
   <license>Apache License 2.0</license>
+
+  <author email="ivanpauno@ekumenlabs.com">Ivan Paunovic</author>
 
   <depend>launch</depend>
 

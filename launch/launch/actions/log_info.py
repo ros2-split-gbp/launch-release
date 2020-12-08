@@ -15,37 +15,40 @@
 """Module for the LogInfo action."""
 
 from typing import List
-from typing import overload
-from typing import Text
-from typing import Union
 
 import launch.logging
 
 from ..action import Action
+from ..frontend import Entity
+from ..frontend import expose_action
+from ..frontend import Parser  # noqa: F401
 from ..launch_context import LaunchContext
+from ..some_substitutions_type import SomeSubstitutionsType
 from ..substitution import Substitution
 from ..utilities import normalize_to_list_of_substitutions
 
 
+@expose_action('log')
 class LogInfo(Action):
     """Action that logs a message when executed."""
 
-    @overload
-    def __init__(self, *, msg: Text) -> None:
-        """Construct with just Text (unicode string)."""
-        ...
-
-    @overload  # noqa: F811
-    def __init__(self, *, msg: List[Union[Text, Substitution]]) -> None:
-        """Construct with list of Text and Substitutions."""
-        ...
-
-    def __init__(self, *, msg, **kwargs):  # noqa: F811
-        """Constructor."""
+    def __init__(self, *, msg: SomeSubstitutionsType, **kwargs):
+        """Create a LogInfo action."""
         super().__init__(**kwargs)
 
         self.__msg = normalize_to_list_of_substitutions(msg)
         self.__logger = launch.logging.get_logger('launch.user')
+
+    @classmethod
+    def parse(
+        cls,
+        entity: Entity,
+        parser: 'Parser'
+    ):
+        """Parse `log` tag."""
+        _, kwargs = super().parse(entity, parser)
+        kwargs['msg'] = parser.parse_substitution(entity.get_attr('message'))
+        return cls, kwargs
 
     @property
     def msg(self) -> List[Substitution]:

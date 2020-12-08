@@ -35,7 +35,7 @@ class LaunchContext:
 
     def __init__(self, *, argv: Optional[Iterable[Text]] = None) -> None:
         """
-        Constructor.
+        Create a LaunchContext.
 
         :param: argv stored in the context for access by the entities, None results in []
         """
@@ -121,7 +121,7 @@ class LaunchContext:
         return self._get_combined_locals()
 
     @property  # noqa: A003
-    def locals(self):
+    def locals(self):  # noqa: A003
         """Getter for the locals."""
         class AttributeDict:
 

@@ -70,7 +70,7 @@ class IncludeLaunchDescription(Action):
         ] = None,
         **kwargs
     ) -> None:
-        """Constructor."""
+        """Create an IncludeLaunchDescription action."""
         super().__init__(**kwargs)
         self.__launch_description_source = launch_description_source
         self.__launch_arguments = () if launch_arguments is None else tuple(launch_arguments)
@@ -90,6 +90,8 @@ class IncludeLaunchDescription(Action):
                 )
                 for e in args
             ]
+            for e in args:
+                e.assert_entity_completely_parsed()
         return cls, kwargs
 
     @property

@@ -2,17 +2,76 @@
 Changelog for package launch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.9.7 (2020-12-04)
-------------------
-* Delete unnecessary loading of 'launch.frontend.interpolate_substitution_method' entry point that was never used (`#434 <https://github.com/ros2/launch/issues/434>`_) (`#464 <https://github.com/ros2/launch/issues/464>`_)
-* Fix parsing of cmd line arguments in XML and yaml file (`#379 <https://github.com/ros2/launch/issues/379>`_) (`#403 <https://github.com/ros2/launch/issues/403>`_)
-* Contributors: Ivan Santiago Paunovic, Jacob Perron
+0.14.0 (2020-12-08)
+-------------------
+* print stderr message when command failed (`#474 <https://github.com/ros2/launch/issues/474>`_)
+* Add frontend support for LogInfo action (`#467 <https://github.com/ros2/launch/issues/467>`_)
+* Contributors: Jacob Perron, Takamasa Horibe
 
-0.9.6 (2020-01-21)
-------------------
-* Fix case where output buffer is closed during shutdown (`#365 <https://github.com/ros2/launch/issues/365>`_)
+0.13.0 (2020-11-04)
+-------------------
+* Validate unparsed attributes and subentities in launch_xml and launch_yaml (`#468 <https://github.com/ros2/launch/issues/468>`_)
+* Fix bug in launch.actions.TimerAction.parse() (`#470 <https://github.com/ros2/launch/issues/470>`_)
+* Allow configuring logging directory through environment variables (`#460 <https://github.com/ros2/launch/issues/460>`_)
+* Update package maintainers (`#465 <https://github.com/ros2/launch/issues/465>`_)
+* Expose Timer action in launch xml (`#462 <https://github.com/ros2/launch/issues/462>`_)
+* Fix dollar symbols in substitution grammar (`#461 <https://github.com/ros2/launch/issues/461>`_)
+* Contributors: Christophe Bedard, Ivan Santiago Paunovic, Michel Hidalgo
+
+0.12.0 (2020-08-18)
+-------------------
+* Add new conditions for checking launch configuration values (`#453 <https://github.com/ros2/launch/issues/453>`_)
+* Contributors: Jacob Perron
+
+0.11.1 (2020-08-14)
+-------------------
+* Refactor launch service run_async loop to wait on futures and queued events (`#449 <https://github.com/ros2/launch/issues/449>`_)
+* Fix documentation typo (`#446 <https://github.com/ros2/launch/issues/446>`_)
+* Fix type_utils.extract_type() function. (`#445 <https://github.com/ros2/launch/issues/445>`_)
+* Contributors: Jacob Perron, Michel Hidalgo
+
+0.11.0 (2020-08-04)
+-------------------
+* Handle empty strings in type coercion. (`#443 <https://github.com/ros2/launch/issues/443>`_)
+* Consolidate type_utils in a way that can be reused in substitution results that need to be coerced to a specific type (`#438 <https://github.com/ros2/launch/issues/438>`_)
+* Delete unnecessary loading of 'launch.frontend.interpolate_substitution_method' entry point that was never used (`#434 <https://github.com/ros2/launch/issues/434>`_)
+* Avoid side effect, defer until needed (`#432 <https://github.com/ros2/launch/issues/432>`_)
+* Remove pkg_resources, replace it with the use of the more modern importlib* libraries. (`#430 <https://github.com/ros2/launch/issues/430>`_)
+* Remove the asyncio.wait loop parameter. (`#429 <https://github.com/ros2/launch/issues/429>`_)
+* Add pytest.ini so local tests don't display warning (`#428 <https://github.com/ros2/launch/issues/428>`_)
+* Defer shutdown if already running (`#427 <https://github.com/ros2/launch/issues/427>`_)
+* Add respawn and respawn_delay support (`#426 <https://github.com/ros2/launch/issues/426>`_)
+* Fix up parser.py (`#414 <https://github.com/ros2/launch/issues/414>`_)
+* Contributors: CHEN, Chris Lalancette, Dan Rose, Dirk Thomas, Ivan Santiago Paunovic, Jorge Perez, Michel Hidalgo
+
+0.10.2 (2020-05-26)
+-------------------
+* Fix new flake8 errors. (`#420 <https://github.com/ros2/launch/issues/420>`_)
+* Contributors: Michel Hidalgo
+
+0.10.1 (2020-05-08)
+-------------------
+* removed deprecated loop parameter call (`#387 <https://github.com/ros2/launch/issues/387>`_) (`#410 <https://github.com/ros2/launch/issues/410>`_)
+* Contributors: Zahi Kakish
+
+0.10.0 (2020-04-24)
+-------------------
+* remove Python 3.5 specific logic (`#401 <https://github.com/ros2/launch/issues/401>`_)
+* use typing.TYPE_CHECKING to avoid flake8 failure (`#398 <https://github.com/ros2/launch/issues/398>`_)
+* Suppress flake8 A003 warning (`#395 <https://github.com/ros2/launch/issues/395>`_)
+* more verbose test_flake8 error messages (same as `ros2/launch_ros#135 <https://github.com/ros2/launch_ros/issues/135>`_)
+* Remove unnecessary overloads (`#389 <https://github.com/ros2/launch/issues/389>`_)
+* Simplify type annotation (`#388 <https://github.com/ros2/launch/issues/388>`_)
+* Add support for anon substitution (`#384 <https://github.com/ros2/launch/issues/384>`_)
+* Make RegisterEventHandler describe its sub-entities (`#386 <https://github.com/ros2/launch/issues/386>`_)
+* Fix parsing of cmd line arguments in XML and yaml file (`#379 <https://github.com/ros2/launch/issues/379>`_)
+* Only allow ExecuteProcess actions to execute once (`#375 <https://github.com/ros2/launch/issues/375>`_)
+* Fix grammar in docstring (`#373 <https://github.com/ros2/launch/issues/373>`_)
 * Release loop lock before waiting for it to do work (`#369 <https://github.com/ros2/launch/issues/369>`_)
-* Contributors: Peter Baughman, Shane Loretz
+* Adds `Command` substitution (`#367 <https://github.com/ros2/launch/issues/367>`_)
+* Handle case where output buffer is closed during shutdown (`#365 <https://github.com/ros2/launch/issues/365>`_)
+* Use imperative mood in docstrings. (`#362 <https://github.com/ros2/launch/issues/362>`_)
+* Contributors: Dirk Thomas, Ivan Santiago Paunovic, Jacob Perron, Jorge Perez, Peter Baughman, Shane Loretz, Steven! Ragnarök, William Woodall
 
 0.9.5 (2019-11-13)
 ------------------
