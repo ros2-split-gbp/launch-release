@@ -15,6 +15,7 @@
 """Module for signal management functionality."""
 
 import asyncio
+from contextlib import ExitStack
 import os
 import platform
 import signal
@@ -25,22 +26,6 @@ from typing import Callable
 from typing import Optional
 from typing import Tuple  # noqa: F401
 from typing import Union
-
-
-def is_winsock_handle(fd):
-    """Check if the given file descriptor is WinSock handle."""
-    if platform.system() != 'Windows':
-        return False
-    try:
-        # On Windows, WinSock handles and regular file handles
-        # have disjoint APIs. This test leverages the fact that
-        # attempting to get an MSVC runtime file handle from a
-        # WinSock handle will fail.
-        import msvcrt
-        msvcrt.get_osfhandle(fd)
-        return False
-    except OSError:
-        return True
 
 
 class AsyncSafeSignalManager:
@@ -93,16 +78,28 @@ class AsyncSafeSignalManager:
         self.__background_loop = None  # type: Optional[asyncio.AbstractEventLoop]
         self.__handlers = {}  # type: dict
         self.__prev_wakeup_handle = -1  # type: Union[int, socket.socket]
-        self.__wsock, self.__rsock = socket.socketpair()  # type: Tuple[socket.socket, socket.socket]  # noqa
-        self.__wsock.setblocking(False)
-        self.__rsock.setblocking(False)
+        self.__wsock = None
+        self.__rsock = None
+        self.__close_sockets = None
 
     def __enter__(self):
+        pair = socket.socketpair()  # type: Tuple[socket.socket, socket.socket]  # noqa
+        with ExitStack() as stack:
+            self.__wsock = stack.enter_context(pair[0])
+            self.__rsock = stack.enter_context(pair[1])
+            self.__wsock.setblocking(False)
+            self.__rsock.setblocking(False)
+            self.__close_sockets = stack.pop_all().close
+
         self.__add_signal_readers()
         try:
             self.__install_signal_writers()
         except Exception:
             self.__remove_signal_readers()
+            self.__close_sockets()
+            self.__rsock = None
+            self.__wsock = None
+            self.__close_sockets = None
             raise
         self.__chain()
         return self
@@ -115,6 +112,10 @@ class AsyncSafeSignalManager:
                 self.__remove_signal_readers()
         finally:
             self.__unchain()
+            self.__close_sockets()
+            self.__rsock = None
+            self.__wsock = None
+            self.__close_sockets = None
 
     def __add_signal_readers(self):
         try:
@@ -185,10 +186,14 @@ class AsyncSafeSignalManager:
         if isinstance(prev_wakeup_handle, socket.socket):
             # Detach (Windows) socket and retrieve the raw OS handle.
             prev_wakeup_handle = prev_wakeup_handle.detach()
-        if wakeup_handle != -1 and is_winsock_handle(wakeup_handle):
+        if wakeup_handle != -1 and platform.system() == 'Windows':
             # On Windows, os.write will fail on a WinSock handle. There is no WinSock API
             # in the standard library either. Thus we wrap it in a socket.socket instance.
-            wakeup_handle = socket.socket(fileno=wakeup_handle)
+            try:
+                wakeup_handle = socket.socket(fileno=wakeup_handle)
+            except WindowsError as e:
+                if e.winerror != 10038:  # WSAENOTSOCK
+                    raise
         self.__prev_wakeup_handle = wakeup_handle
         return prev_wakeup_handle
 
