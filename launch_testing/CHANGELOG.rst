@@ -2,39 +2,16 @@
 Changelog for package launch_testing
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.17.0 (2021-04-06)
+0.10.5 (2021-04-14)
+-------------------
+* Fix max() with empty sequence (`#440 <https://github.com/ros2/launch/issues/440>`_) (`#491 <https://github.com/ros2/launch/issues/491>`_)
+* Contributors: Dirk Thomas, Michel Hidalgo
+
+0.10.4 (2020-12-08)
 -------------------
 
-0.16.0 (2021-03-19)
+0.10.3 (2020-08-27)
 -------------------
-* Use unittest.mock instead of mock (`#487 <https://github.com/ros2/launch/issues/487>`_)
-* Contributors: Michel Hidalgo
-
-0.15.0 (2021-01-25)
--------------------
-
-0.14.0 (2020-12-08)
--------------------
-
-0.13.0 (2020-11-04)
--------------------
-* Update package maintainers (`#465 <https://github.com/ros2/launch/issues/465>`_)
-* Contributors: Michel Hidalgo
-
-0.12.0 (2020-08-18)
--------------------
-
-0.11.1 (2020-08-14)
--------------------
-
-0.11.0 (2020-08-04)
--------------------
-* Disable cleanup of test cases once they have been run (`#406 <https://github.com/ros2/launch/issues/406>`_)
-* Fix max() with empty sequence (`#440 <https://github.com/ros2/launch/issues/440>`_)
-* Use unittest.TestCase.id() for pytest failure reprs. (`#436 <https://github.com/ros2/launch/issues/436>`_)
-* Use unittest.TestCase.id() to put together jUnit XML output. (`#435 <https://github.com/ros2/launch/issues/435>`_)
-* Claim ownership (`#433 <https://github.com/ros2/launch/issues/433>`_)
-* Contributors: Dirk Thomas, Michel Hidalgo, Scott K Logan, William Woodall
 
 0.10.2 (2020-05-26)
 -------------------
