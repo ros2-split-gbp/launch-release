@@ -1,3 +1,34 @@
+## launch (rolling) - 0.18.0-1
+
+The packages in the `launch` repository were released into the `rolling` distro by running `/usr/bin/bloom-release --track rolling --rosdistro rolling launch` on `Fri, 18 Jun 2021 17:57:46 -0000`
+
+These packages were released:
+- `launch`
+- `launch_testing`
+- `launch_testing_ament_cmake`
+- `launch_xml`
+- `launch_yaml`
+
+These packages were explicitly ignored:
+- `test_launch_testing`
+
+Version of package(s) in repository `launch`:
+
+- upstream repository: https://github.com/ros2/launch.git
+- release repository: https://github.com/ros2-gbp/launch-release.git
+- rosdistro version: `0.17.0-1`
+- old version: `0.17.0-1`
+- new version: `0.18.0-1`
+
+Versions of tools used:
+
+- bloom version: `0.10.7`
+- catkin_pkg version: `0.4.23`
+- rosdep version: `0.19.0`
+- rosdistro version: `0.8.2`
+- vcstools version: `0.1.42`
+
+
 ## launch (foxy) - 0.10.5-1
 
 The packages in the `launch` repository were released into the `foxy` distro by running `/usr/bin/bloom-release -r foxy launch` on `Wed, 14 Apr 2021 22:03:53 -0000`
