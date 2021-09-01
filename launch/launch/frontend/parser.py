@@ -1,5 +1,4 @@
 # Copyright 2019 Open Source Robotics Foundation, Inc.
-# Copyright 2020 Open Avatar Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,43 +14,35 @@
 
 """Module for Parser class and parsing methods."""
 
-import itertools
-import os.path
+import io
+import os
+from typing import Any
 from typing import List
 from typing import Optional
-from typing import Set
 from typing import Text
-from typing import TextIO
+from typing import Tuple
 from typing import Type
-from typing import TYPE_CHECKING
 from typing import Union
-import warnings
 
-try:
-    import importlib.metadata as importlib_metadata
-except ModuleNotFoundError:
-    import importlib_metadata
+from pkg_resources import iter_entry_points
 
 from .entity import Entity
 from .expose import instantiate_action
-from .parse_substitution import parse_if_substitutions
 from .parse_substitution import parse_substitution
 from .parse_substitution import replace_escaped_characters
 from ..action import Action
 from ..invalid_launch_file_error import InvalidLaunchFileError
-from ..substitution import Substitution
-from ..utilities.type_utils import NormalizedValueType
-from ..utilities.type_utils import StrSomeValueType
-from ..utilities.typing_file_path import FilePath
+from ..some_substitutions_type import SomeSubstitutionsType
+from ..utilities import is_a
 
-if TYPE_CHECKING:
-    from ..launch_description import LaunchDescription
+if False:
+    from ..launch_description import LaunchDescription  # noqa: F401
 
 
 class InvalidFrontendLaunchFileError(InvalidLaunchFileError):
     """Exception raised when the given frontend launch file is not valid."""
 
-    pass
+    ...
 
 
 class Parser:
@@ -59,10 +50,8 @@ class Parser:
     Abstract class for parsing launch actions, substitutions and descriptions.
 
     Implementations of the parser class, should override the load method.
-    They could also override the parse_substitution and/or get_file_extensions methods, or not.
-    load_launch_extensions, parse_action, parse_description, get_available_extensions, may_parse,
-    is_filename_valid, get_parsers_from_filename and get_file_extensions_from_parsers are not
-    supposed to be overriden.
+    They could also override the parse_substitution method, or not.
+    load_launch_extensions, parse_action and parse_description are not suposed to be overrided.
     """
 
     extensions_loaded = False
@@ -72,8 +61,7 @@ class Parser:
     def load_launch_extensions(cls):
         """Load launch extensions, in order to get all the exposed substitutions and actions."""
         if cls.extensions_loaded is False:
-            for entry_point in importlib_metadata.entry_points().get(
-                    'launch.frontend.launch_extension', []):
+            for entry_point in iter_entry_points('launch.frontend.launch_extension'):
                 entry_point.load()
             cls.extensions_loaded = True
 
@@ -81,29 +69,21 @@ class Parser:
     def load_parser_implementations(cls):
         """Load all the available frontend entities."""
         if cls.frontend_parsers is None:
-            parsers = {
+            cls.frontend_parsers = {
                 entry_point.name: entry_point.load()
-                for entry_point in importlib_metadata.entry_points().get(
-                        'launch.frontend.parser', [])
+                for entry_point in iter_entry_points('launch.frontend.parser')
             }
-            cls.frontend_parsers = dict(sorted(parsers.items()))
 
-    def parse_action(self, entity: Entity) -> Action:
+    def parse_action(self, entity: Entity) -> (Action, Tuple[Any]):
         """Parse an action, using its registered parsing method."""
         self.load_launch_extensions()
         return instantiate_action(entity, self)
 
-    def parse_substitution(self, value: Text) -> List[Substitution]:
+    def parse_substitution(self, value: Text) -> SomeSubstitutionsType:
         """Parse a substitution."""
         return parse_substitution(value)
 
-    def parse_if_substitutions(
-        self, value: StrSomeValueType
-    ) -> NormalizedValueType:
-        """See :py:func:`launch.frontend.parser.parse_if_substitutions`."""
-        return parse_if_substitutions(value)
-
-    def escape_characters(self, value: Text) -> Text:
+    def escape_characters(self, value: Text) -> SomeSubstitutionsType:
         """Escape characters in strings."""
         return replace_escaped_characters(value)
 
@@ -129,8 +109,6 @@ class Parser:
         extension: Text,
     ) -> bool:
         """Return an entity loaded with a markup file."""
-        warnings.warn(
-            'Parser.is_extension_valid is deprecated, use Parser.is_filename_valid instead')
         cls.load_parser_implementations()
         return extension in cls.frontend_parsers
 
@@ -140,9 +118,6 @@ class Parser:
         extension: Text,
     ) -> Optional[Type['Parser']]:
         """Return an entity loaded with a markup file."""
-        warnings.warn(
-            'Parser.get_parser_from_extension is deprecated, '
-            'use Parser.get_parsers_from_filename instead')
         cls.load_parser_implementations()
         try:
             return cls.frontend_parsers[extension]
@@ -150,50 +125,9 @@ class Parser:
             raise RuntimeError('Not recognized frontend implementation')
 
     @classmethod
-    def may_parse(
-        cls,
-        filename: Text,
-    ) -> bool:
-        """Return `True` if the filename is valid for this parser."""
-        return any(filename.endswith('.' + ext) for ext in cls.get_file_extensions())
-
-    @classmethod
-    def is_filename_valid(
-        cls,
-        filename: Text,
-    ) -> bool:
-        """Return `True` if the filename is valid for any parser."""
-        cls.load_parser_implementations()
-        return any(
-            parser.may_parse(filename)
-            for parser in cls.frontend_parsers.values()
-        )
-
-    @classmethod
-    def get_parsers_from_filename(
-        cls,
-        filename: Text,
-    ) -> List[Type['Parser']]:
-        """Return a list of parsers which entity loaded with a markup file."""
-        cls.load_parser_implementations()
-        return [
-            parser for parser in cls.frontend_parsers.values()
-            if parser.may_parse(filename)
-        ]
-
-    @classmethod
-    def get_file_extensions_from_parsers(cls) -> Set[Type['Parser']]:
-        """Return a set of file extensions known to the parser implementations."""
-        cls.load_parser_implementations()
-        return set(itertools.chain.from_iterable(
-            parser_extension.get_file_extensions()
-            for parser_extension in cls.frontend_parsers.values()
-        ))
-
-    @classmethod
     def load(
         cls,
-        file: Union[FilePath, TextIO],
+        file: Union[str, io.TextIOBase],
     ) -> (Entity, 'Parser'):
         """
         Parse an Entity from a markup language-based launch file.
@@ -206,37 +140,28 @@ class Parser:
         # Imported here, to avoid recursive import.
         cls.load_parser_implementations()
 
-        try:
-            fileobj = open(file, 'r')
-            didopen = True
-        except TypeError:
-            fileobj = file
-            didopen = False
-
-        try:
-            filename = getattr(fileobj, 'name', '')
-            implementations = cls.get_parsers_from_filename(filename)
-            implementations += [
-                parser for parser in cls.frontend_parsers.values()
-                if parser not in implementations
-            ]
-
-            exceptions = []
-            for implementation in implementations:
-                try:
-                    return implementation.load(fileobj)
-                except Exception as ex:
+        def get_key(extension):
+            def key(x):
+                return x[0] != extension
+            return key
+        exceptions = []
+        extension = ''
+        if is_a(file, str):
+            extension = file
+        elif hasattr(file, 'name'):
+            extension = file.name
+        extension = os.path.splitext(extension)[1]
+        if extension:
+            extension = extension[1:]
+        for (frontend_name, implementation) in sorted(
+            cls.frontend_parsers.items(), key=get_key(extension)
+        ):
+            try:
+                return implementation.load(file)
+            except Exception as ex:
+                if is_a(file, io.TextIOBase):
+                    file.seek(0)
+                else:
                     exceptions.append(ex)
-                    fileobj.seek(0)
-            # file extension without leading '.'
-            extension = os.path.splitext(filename)[1][1:]
-            extension = '' if not cls.is_filename_valid(filename) else extension
-            raise InvalidFrontendLaunchFileError(extension, likely_errors=exceptions)
-        finally:
-            if didopen:
-                fileobj.close()
-
-    @classmethod
-    def get_file_extensions(cls) -> Set[Text]:
-        """Return the set of file extensions known to this parser."""
-        return {}
+        extension = '' if not cls.is_extension_valid(extension) else extension
+        raise InvalidFrontendLaunchFileError(extension, likely_errors=exceptions)

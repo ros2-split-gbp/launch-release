@@ -40,7 +40,7 @@ class LaunchConfigurationEquals(Condition):
 
     def __init__(
         self,
-        launch_configuration_name: Text,
+        launch_configuration_name: SomeSubstitutionsType,
         expected_value: Optional[SomeSubstitutionsType]
     ) -> None:
         self.__launch_configuration_name = launch_configuration_name
