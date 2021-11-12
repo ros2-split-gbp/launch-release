@@ -1,4 +1,4 @@
-# Copyright 2019 Open Source Robotics Foundation, Inc.
+# Copyright 2020 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,15 +12,45 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Module which implements get_typed_value function."""
+"""Extra type utils for launch frontend implementations."""
 
 from typing import Any
 from typing import List
 from typing import Text
 from typing import Tuple
+from typing import Type
 from typing import Union
 
 from .entity import Entity
+from ..utilities.type_utils import AllowedTypesType
+from ..utilities.type_utils import is_typing_list
+
+
+def check_is_list_entity(data_type: Union[AllowedTypesType, Type[List[Entity]]]) -> bool:
+    """Check if `data_type` is a `typing.List` with elements of `Entity` type or derived."""
+    return is_typing_list(data_type) and \
+        issubclass(data_type.__args__[0], Entity)  # type: ignore
+
+
+def get_data_type_from_identifier(type_identifier: Text):
+    mapping = {
+        'str': str,
+        'bool': bool,
+        'float': float,
+        'int': int,
+        'list_of_str': List[str],
+        'list_of_bool': List[bool],
+        'list_of_float': List[float],
+        'list_of_int': List[int],
+        'yaml': None,
+    }
+    if type_identifier not in mapping:
+        raise ValueError(f"Got invalid type identifier '{type_identifier}'")
+    return mapping[type_identifier]
+
+
+# The following definitions were moved/refactored into launch.utilities.type_utils since Foxy
+# Kept here for backwards compatibility
 
 __ScalarTypesTuple = (
     int, float, bool, str
@@ -41,12 +71,6 @@ def check_is_union(data_type: Any) -> bool:
     """Check if `data_type` is based on a `typing.Union`."""
     return hasattr(data_type, '__origin__') and \
         data_type.__origin__ is Union
-
-
-def check_is_list_entity(data_type: Any) -> bool:
-    """Check if `data_type` is a `typing.List` with elements of `Entity` type or derived."""
-    return check_is_list(data_type) and \
-        issubclass(data_type.__args__[0], Entity)
 
 
 def get_tuple_of_types(data_type: Any) -> Tuple:
@@ -76,7 +100,6 @@ def extract_type(data_type: Any) -> Tuple[Any, bool]:
         - a uniform list i.e `List[str]`, `List[int]`, `List[float]`, `List[bool]`;
         - a non-uniform list of known scalar types e.g. `List[Union[int, str]]`;
         - a non-uniform list of any scalar type i.e. `list` or `List`;
-
     :returns: a tuple (type_obj, is_list).
         is_list is `True` for the supported list types, if not is `False`.
         type_obj is the object representing that type in python. In the case of list
@@ -110,7 +133,6 @@ def check_type(value: Any, data_type: Any) -> bool:
         - a non-uniform list of known scalar types e.g. `List[Union[int, str]]`;
         - a non-uniform list of any scalar type i.e. `list` or `List`;
         - a `Union` of any of the above.
-
     `types = None` works in the same way as:
         `Union[int, float, bool, list, str]`
     """
@@ -170,7 +192,6 @@ def coerce_scalar(x: str, data_type: Any = None) -> Union[int, str, float, bool]
     If data_type is not `None`, only those conversions are tried.
     If not, all the possible convertions are tried.
     The order is always: `int`, `float`, `bool`, `str`.
-
     :param x: string to be converted.
     :param type_obj: should be `int`, `float`, `bool`, `str`.
         It can also be an iterable combining the above types, or `None`.
@@ -211,17 +232,14 @@ def get_typed_value(
     Try to convert `value` to the type specified in `data_type`.
 
     If not raise `AttributeError`.
-
     The allowed types are:
         - a scalar type i.e. `str`, `int`, `float`, `bool`;
         - a uniform list i.e `List[str]`, `List[int]`, `List[float]`, `List[bool]`;
         - a non-uniform list of known scalar types e.g. `List[Union[int, str]]`;
         - a non-uniform list of any scalar type i.e. `list` or `List`;
         - a `Union` of any of the above.
-
     `types = None` works in the same way as:
         `Union[int, float, bool, list, str]`
-
     The coercion order for scalars is always: `int`, `float`, `bool`, `str`.
     """
     if data_type is None:
