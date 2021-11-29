@@ -2,22 +2,55 @@
 Changelog for package launch_testing
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.10.7 (2021-11-12)
+0.20.0 (2021-11-29)
+-------------------
+* Declare frontend group dependency & use explicit dependencies in launch_testing (`#520 <https://github.com/ros2/launch/issues/520>`_)
+* Update maintainers to Aditya Pande and Michel Hidalgo (`#559 <https://github.com/ros2/launch/issues/559>`_)
+* Updated maintainers (`#555 <https://github.com/ros2/launch/issues/555>`_)
+* First prototype of native pytest plugin for launch based tests (`#528 <https://github.com/ros2/launch/issues/528>`_)
+* Adding Executable description class (`#454 <https://github.com/ros2/launch/issues/454>`_)
+* Add a "hello world" style example (`#532 <https://github.com/ros2/launch/issues/532>`_)
+* Contributors: Aditya Pande, Audrow Nash, Christophe Bedard, Ivan Santiago Paunovic, roger-strain
+
+0.19.0 (2021-07-15)
 -------------------
 
-0.10.6 (2021-08-31)
+0.18.0 (2021-06-18)
 -------------------
 
-0.10.5 (2021-04-14)
--------------------
-* Fix max() with empty sequence (`#440 <https://github.com/ros2/launch/issues/440>`_) (`#491 <https://github.com/ros2/launch/issues/491>`_)
-* Contributors: Dirk Thomas, Michel Hidalgo
-
-0.10.4 (2020-12-08)
+0.17.0 (2021-04-06)
 -------------------
 
-0.10.3 (2020-08-27)
+0.16.0 (2021-03-19)
 -------------------
+* Use unittest.mock instead of mock (`#487 <https://github.com/ros2/launch/issues/487>`_)
+* Contributors: Michel Hidalgo
+
+0.15.0 (2021-01-25)
+-------------------
+
+0.14.0 (2020-12-08)
+-------------------
+
+0.13.0 (2020-11-04)
+-------------------
+* Update package maintainers (`#465 <https://github.com/ros2/launch/issues/465>`_)
+* Contributors: Michel Hidalgo
+
+0.12.0 (2020-08-18)
+-------------------
+
+0.11.1 (2020-08-14)
+-------------------
+
+0.11.0 (2020-08-04)
+-------------------
+* Disable cleanup of test cases once they have been run (`#406 <https://github.com/ros2/launch/issues/406>`_)
+* Fix max() with empty sequence (`#440 <https://github.com/ros2/launch/issues/440>`_)
+* Use unittest.TestCase.id() for pytest failure reprs. (`#436 <https://github.com/ros2/launch/issues/436>`_)
+* Use unittest.TestCase.id() to put together jUnit XML output. (`#435 <https://github.com/ros2/launch/issues/435>`_)
+* Claim ownership (`#433 <https://github.com/ros2/launch/issues/433>`_)
+* Contributors: Dirk Thomas, Michel Hidalgo, Scott K Logan, William Woodall
 
 0.10.2 (2020-05-26)
 -------------------
