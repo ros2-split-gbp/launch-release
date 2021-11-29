@@ -19,6 +19,9 @@ from typing import Iterable, Sequence
 from typing import List
 from typing import Optional
 from typing import Tuple
+from typing import Union
+
+import launch.logging
 
 from .set_launch_configuration import SetLaunchConfiguration
 from ..action import Action
@@ -63,7 +66,7 @@ class IncludeLaunchDescription(Action):
 
     def __init__(
         self,
-        launch_description_source: LaunchDescriptionSource,
+        launch_description_source: Union[LaunchDescriptionSource, SomeSubstitutionsType],
         *,
         launch_arguments: Optional[
             Iterable[Tuple[SomeSubstitutionsType, SomeSubstitutionsType]]
@@ -72,15 +75,18 @@ class IncludeLaunchDescription(Action):
     ) -> None:
         """Create an IncludeLaunchDescription action."""
         super().__init__(**kwargs)
+        if not isinstance(launch_description_source, LaunchDescriptionSource):
+            launch_description_source = AnyLaunchDescriptionSource(launch_description_source)
         self.__launch_description_source = launch_description_source
         self.__launch_arguments = () if launch_arguments is None else tuple(launch_arguments)
+        self.__logger = launch.logging.get_logger(__name__)
 
     @classmethod
     def parse(cls, entity: Entity, parser: Parser):
         """Return `IncludeLaunchDescription` action and kwargs for constructing it."""
         _, kwargs = super().parse(entity, parser)
         file_path = parser.parse_substitution(entity.get_attr('file'))
-        kwargs['launch_description_source'] = AnyLaunchDescriptionSource(file_path)
+        kwargs['launch_description_source'] = file_path
         args = entity.get_attr('arg', data_type=List[Entity], optional=True)
         if args is not None:
             kwargs['launch_arguments'] = [
@@ -122,6 +128,21 @@ class IncludeLaunchDescription(Action):
         ret = self.__launch_description_source.try_get_launch_description_without_context()
         return [ret] if ret is not None else []
 
+    def _try_get_arguments_names_without_context(self):
+        try:
+            context = LaunchContext()
+            return [
+                perform_substitutions(context, normalize_to_list_of_substitutions(arg_name))
+                for arg_name, arg_value in self.__launch_arguments
+            ]
+        except Exception as exc:
+            self.__logger.debug(
+                'Failed to get launch arguments names for launch description '
+                f"'{self.__launch_description_source.location}', "
+                f'with exception: {str(exc)}'
+            )
+        return None
+
     def execute(self, context: LaunchContext) -> List[LaunchDescriptionEntity]:
         """Execute the action."""
         launch_description = self.__launch_description_source.get_launch_description(context)
@@ -135,14 +156,19 @@ class IncludeLaunchDescription(Action):
 
         # Do best effort checking to see if non-optional, non-default declared arguments
         # are being satisfied.
-        argument_names = [
+        my_argument_names = [
             perform_substitutions(context, normalize_to_list_of_substitutions(arg_name))
             for arg_name, arg_value in self.launch_arguments
         ]
-        declared_launch_arguments = launch_description.get_launch_arguments()
-        for argument in declared_launch_arguments:
+        declared_launch_arguments = (
+            launch_description.get_launch_arguments_with_include_launch_description_actions())
+        for argument, ild_actions in declared_launch_arguments:
             if argument._conditionally_included or argument.default_value is not None:
                 continue
+            argument_names = my_argument_names
+            if ild_actions is not None:
+                for ild_action in ild_actions:
+                    argument_names.extend(ild_action._try_get_arguments_names_without_context())
             if argument.name not in argument_names:
                 raise RuntimeError(
                     "Included launch description missing required argument '{}' "
