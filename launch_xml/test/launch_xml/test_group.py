@@ -17,15 +17,21 @@
 import io
 import textwrap
 
-from launch.actions import SetLaunchConfiguration
+from launch.actions import GroupAction, PopLaunchConfigurations, PushLaunchConfigurations
+from launch.actions import ResetLaunchConfigurations, SetLaunchConfiguration
 from launch.frontend import Parser
+from launch.launch_context import LaunchContext
 
 
 def test_group():
     xml_file = \
         """\
         <launch>
-            <group scoped="False">
+            <let name="foo" value="FOO"/>
+            <let name="bar" value="BAR"/>
+            <group scoped="True" forwarding="False">
+                <keep name="bar" value="$(var bar)"/>
+                <keep name="baz" value="BAZ"/>
                 <let name="var1" value="asd"/>
                 <let name="var2" value="asd"/>
             </group>
@@ -34,11 +40,37 @@ def test_group():
     xml_file = textwrap.dedent(xml_file)
     root_entity, parser = Parser.load(io.StringIO(xml_file))
     ld = parser.parse_description(root_entity)
-    group = ld.entities[0]
-    actions = group.execute(None)
-    assert 2 == len(actions)
-    assert isinstance(actions[0], SetLaunchConfiguration)
-    assert isinstance(actions[1], SetLaunchConfiguration)
+
+    assert isinstance(ld.entities[0], SetLaunchConfiguration)
+    assert isinstance(ld.entities[1], SetLaunchConfiguration)
+    assert isinstance(ld.entities[2], GroupAction)
+
+    lc = LaunchContext()
+    assert 0 == len(lc.launch_configurations)
+    ld.entities[0].visit(lc)
+    ld.entities[1].visit(lc)
+    assert 2 == len(lc.launch_configurations)
+    assert 'foo' in lc.launch_configurations.keys()
+    assert 'FOO' == lc.launch_configurations['foo']
+    assert 'bar' in lc.launch_configurations.keys()
+    assert 'BAR' == lc.launch_configurations['bar']
+    actions = ld.entities[2].execute(lc)
+    assert 5 == len(actions)
+    assert isinstance(actions[0], PushLaunchConfigurations)
+    assert isinstance(actions[1], ResetLaunchConfigurations)
+    assert isinstance(actions[2], SetLaunchConfiguration)
+    assert isinstance(actions[3], SetLaunchConfiguration)
+    assert isinstance(actions[4], PopLaunchConfigurations)
+    actions[0].visit(lc)
+    actions[1].visit(lc)
+    assert 'foo' not in lc.launch_configurations.keys()
+    assert 'bar' in lc.launch_configurations.keys()
+    assert 'BAR' == lc.launch_configurations['bar']
+    assert 'baz' in lc.launch_configurations.keys()
+    assert 'BAZ' == lc.launch_configurations['baz']
+    actions[2].visit(lc)
+    actions[3].visit(lc)
+    actions[4].visit(lc)
 
 
 if __name__ == '__main__':

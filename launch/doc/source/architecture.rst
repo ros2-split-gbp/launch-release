@@ -49,7 +49,7 @@ This is a non-exhaustive list of actions that `launch` may provide:
   - This action will set a :class:`launch.LaunchConfiguration` to a specified value, creating it if it doesn't already exist.
   - These launch configurations can be accessed by any action via a substitution, but are scoped by default.
 
-- :class:`launch.actions.DeclareLaunchDescriptionArgument`
+- :class:`launch.actions.DeclareLaunchArgument`
 
   - This action will declare a launch description argument, which can have a name, default value, and documentation.
   - The argument will be exposed via a command line option for a root launch description, or as action configurations to the include launch description action for the included launch description.
@@ -57,6 +57,11 @@ This is a non-exhaustive list of actions that `launch` may provide:
 - :class:`launch.actions.SetEnvironmentVariable`
 
   - This action will set an environment variable by name.
+
+- :class:`launch.actions.AppendEnvironmentVariable`
+
+  - This action will set an environment variable by name if it does not exist, otherwise it appends to the existing value using a platform-specific separator.
+  - There is also an option to prepend instead of appending and to provide a custom separator.
 
 - :class:`launch.actions.GroupAction`
 
