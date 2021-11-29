@@ -2,6 +2,12 @@
 Changelog for package launch_testing_ament_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.20.0 (2021-11-29)
+-------------------
+* Update maintainers to Aditya Pande and Michel Hidalgo (`#559 <https://github.com/ros2/launch/issues/559>`_)
+* Updated maintainers (`#555 <https://github.com/ros2/launch/issues/555>`_)
+* Contributors: Aditya Pande, Audrow Nash
+
 0.19.0 (2021-07-15)
 -------------------
 
