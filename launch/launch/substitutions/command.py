@@ -113,10 +113,7 @@ class Command(Substitution):
         except FileNotFoundError as ex:
             raise SubstitutionFailure(f'file not found: {ex}')
         if result.returncode != 0:
-            on_error_message = f'executed command failed. Command: {command_str}'
-            if result.stderr:
-                on_error_message += f'\nCaptured stderr output: {result.stderr}'
-            raise SubstitutionFailure(on_error_message)
+            raise SubstitutionFailure(f'executed command failed. Command: {command_str}')
         if result.stderr:
             on_stderr_message = f'executed command showed stderr output.' \
                 f' Command: {command_str}\n' \

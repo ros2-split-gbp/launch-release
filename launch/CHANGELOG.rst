@@ -2,101 +2,50 @@
 Changelog for package launch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.20.0 (2021-11-29)
+0.10.8 (2022-01-12)
 -------------------
-* Evaluate math symbols and functions in python expression (`#557 <https://github.com/ros2/launch/issues/557>`_)
-* Document TimerAction params (`#558 <https://github.com/ros2/launch/issues/558>`_)
-* Improve launch arguments introspection (`#556 <https://github.com/ros2/launch/issues/556>`_)
-* Update maintainers to Aditya Pande and Michel Hidalgo (`#559 <https://github.com/ros2/launch/issues/559>`_)
-* Updated maintainers (`#555 <https://github.com/ros2/launch/issues/555>`_)
-* First prototype of native pytest plugin for launch based tests (`#528 <https://github.com/ros2/launch/issues/528>`_)
-* Allow for raw path specification in IncludeLaunchDescription (`#544 <https://github.com/ros2/launch/issues/544>`_)
-* Adding Executable description class (`#454 <https://github.com/ros2/launch/issues/454>`_)
-* event handlers: Allow to match the target action with a callable and not only with an object instance (`#540 <https://github.com/ros2/launch/issues/540>`_)
-* Add AppendEnvironmentVariable action (`#543 <https://github.com/ros2/launch/issues/543>`_)
-* Document EnvironmentVariable substitution resolution context caveat (`#541 <https://github.com/ros2/launch/issues/541>`_)
-* Feature clear launch configs (`#515 <https://github.com/ros2/launch/issues/515>`_)
-* Add examples to ExecuteProcess docs (`#525 <https://github.com/ros2/launch/issues/525>`_)
-* Fix `DeclareLaunchArgument` xml parsing and constructor (`#529 <https://github.com/ros2/launch/issues/529>`_)
-* Fix pytest run on Windows (`#526 <https://github.com/ros2/launch/issues/526>`_)
-* Improving docs (`#523 <https://github.com/ros2/launch/issues/523>`_)
-* Add filtering mechanism for executable prefix application (`#522 <https://github.com/ros2/launch/issues/522>`_)
-* Contributors: Aditya Pande, Audrow Nash, Cameron Miller, Christophe Bedard, David V. Lu!!, Derek Chopp, Immanuel Martini, Ivan Santiago Paunovic, roger-strain
+* Validate unparsed attributes and subentities in launch_xml and launch_yaml. (`#468 <https://github.com/ros2/launch/issues/468>`_) (`#567 <https://github.com/ros2/launch/issues/567>`_)
+* Evaluate math symbols and functions in python expression. (`#557 <https://github.com/ros2/launch/issues/557>`_) (`#562 <https://github.com/ros2/launch/issues/562>`_)
+* Contributors: Aditya, Immanuel Martini, mergify[bot]
 
-0.19.0 (2021-07-15)
+0.10.7 (2021-11-12)
 -------------------
-* Make each parser extension provide a set of file extensions (`#516 <https://github.com/ros2/launch/issues/516>`_)
-* Contributors: Christophe Bedard
-
-0.18.0 (2021-06-18)
--------------------
-* Add missing exec dependency on PyYAML (`#493 <https://github.com/ros2/launch/issues/493>`_)
-* Refactor TimerAction to allow RosTimer to extend (`#512 <https://github.com/ros2/launch/issues/512>`_)
-* Improve (Not)Equals condition type hinting (`#510 <https://github.com/ros2/launch/issues/510>`_)
-* Contributors: HMellor, Rebecca Butler, Scott K Logan
-
-0.17.0 (2021-04-06)
--------------------
-* Only try to wrap the fd in a socket on Windows (`#498 <https://github.com/ros2/launch/issues/498>`_)
-* Close the socket pair used for signal management (`#497 <https://github.com/ros2/launch/issues/497>`_)
-* Remove is_winsock_handle() and instead test if wrapping the handle in a socket.socket() works (`#494 <https://github.com/ros2/launch/issues/494>`_)
-* Add frontend substitution for logging directory (`#490 <https://github.com/ros2/launch/issues/490>`_)
-* Contributors: Ivan Santiago Paunovic, Jacob Perron
-
-0.16.0 (2021-03-19)
--------------------
-* Add arg_choice arg to DeclareLaunchArguments (`#483 <https://github.com/ros2/launch/issues/483>`_)
-* Contributors: Victor Lopez
-
-0.15.0 (2021-01-25)
--------------------
-* Support Python 3.8-provided importlib.metadata (`#482 <https://github.com/ros2/launch/issues/482>`_)
-* Workaround asyncio signal handling on Unix (`#479 <https://github.com/ros2/launch/issues/479>`_)
-* Handle signals within the asyncio loop. (`#476 <https://github.com/ros2/launch/issues/476>`_)
-* Support non-interactive launch.LaunchService runs (`#475 <https://github.com/ros2/launch/issues/475>`_)
-* Contributors: Michel Hidalgo, Scott K Logan
-
-0.14.0 (2020-12-08)
--------------------
-* print stderr message when command failed (`#474 <https://github.com/ros2/launch/issues/474>`_)
-* Add frontend support for LogInfo action (`#467 <https://github.com/ros2/launch/issues/467>`_)
-* Contributors: Jacob Perron, Takamasa Horibe
-
-0.13.0 (2020-11-04)
--------------------
-* Validate unparsed attributes and subentities in launch_xml and launch_yaml (`#468 <https://github.com/ros2/launch/issues/468>`_)
-* Fix bug in launch.actions.TimerAction.parse() (`#470 <https://github.com/ros2/launch/issues/470>`_)
-* Allow configuring logging directory through environment variables (`#460 <https://github.com/ros2/launch/issues/460>`_)
-* Update package maintainers (`#465 <https://github.com/ros2/launch/issues/465>`_)
-* Expose Timer action in launch xml (`#462 <https://github.com/ros2/launch/issues/462>`_)
-* Fix dollar symbols in substitution grammar (`#461 <https://github.com/ros2/launch/issues/461>`_)
-* Contributors: Christophe Bedard, Ivan Santiago Paunovic, Michel Hidalgo
-
-0.12.0 (2020-08-18)
--------------------
-* Add new conditions for checking launch configuration values (`#453 <https://github.com/ros2/launch/issues/453>`_)
-* Contributors: Jacob Perron
-
-0.11.1 (2020-08-14)
--------------------
-* Refactor launch service run_async loop to wait on futures and queued events (`#449 <https://github.com/ros2/launch/issues/449>`_)
-* Fix documentation typo (`#446 <https://github.com/ros2/launch/issues/446>`_)
-* Fix type_utils.extract_type() function. (`#445 <https://github.com/ros2/launch/issues/445>`_)
-* Contributors: Jacob Perron, Michel Hidalgo
-
-0.11.0 (2020-08-04)
--------------------
+* Allow for raw path specification in IncludeLaunchDescription (`#544 <https://github.com/ros2/launch/issues/544>`_) (`#548 <https://github.com/ros2/launch/issues/548>`_)
 * Handle empty strings in type coercion. (`#443 <https://github.com/ros2/launch/issues/443>`_)
 * Consolidate type_utils in a way that can be reused in substitution results that need to be coerced to a specific type (`#438 <https://github.com/ros2/launch/issues/438>`_)
-* Delete unnecessary loading of 'launch.frontend.interpolate_substitution_method' entry point that was never used (`#434 <https://github.com/ros2/launch/issues/434>`_)
-* Avoid side effect, defer until needed (`#432 <https://github.com/ros2/launch/issues/432>`_)
-* Remove pkg_resources, replace it with the use of the more modern importlib* libraries. (`#430 <https://github.com/ros2/launch/issues/430>`_)
-* Remove the asyncio.wait loop parameter. (`#429 <https://github.com/ros2/launch/issues/429>`_)
-* Add pytest.ini so local tests don't display warning (`#428 <https://github.com/ros2/launch/issues/428>`_)
-* Defer shutdown if already running (`#427 <https://github.com/ros2/launch/issues/427>`_)
-* Add respawn and respawn_delay support (`#426 <https://github.com/ros2/launch/issues/426>`_)
 * Fix up parser.py (`#414 <https://github.com/ros2/launch/issues/414>`_)
-* Contributors: CHEN, Chris Lalancette, Dan Rose, Dirk Thomas, Ivan Santiago Paunovic, Jorge Perez, Michel Hidalgo
+* Contributors: Dan Rose, David V. Lu!!, Ivan Santiago Paunovic, Jacob Perron, Michel Hidalgo
+
+0.10.6 (2021-08-31)
+-------------------
+* Handle signals within the asyncio loop (`#506 <https://github.com/ros2/launch/issues/506>`_)
+  * Handle signals within the asyncio loop (`#476 <https://github.com/ros2/launch/issues/476>`_)
+  * Workaround asyncio signal handling on Unix (`#479 <https://github.com/ros2/launch/issues/479>`_)
+  * Remove is_winsock_handle() and instead test if wrapping the handle in a socket.socket() works (`#494 <https://github.com/ros2/launch/issues/494>`_)
+  * Close the socket pair used for signal management (`#497 <https://github.com/ros2/launch/issues/497>`_)
+  * Only try to wrap the fd in a socket on Windows (`#498 <https://github.com/ros2/launch/issues/498>`_)
+* Contributors: Michael Jeronimo
+
+0.10.5 (2021-04-14)
+-------------------
+* Support non-interactive launch.LaunchService runs (`#475 <https://github.com/ros2/launch/issues/475>`_) (`#500 <https://github.com/ros2/launch/issues/500>`_)
+* Add arg_choice arg to DeclareLaunchArguments (`#483 <https://github.com/ros2/launch/issues/483>`_) (`#485 <https://github.com/ros2/launch/issues/485>`_)
+* Add respawn and respawn_delay support (`#426 <https://github.com/ros2/launch/issues/426>`_) (`#478 <https://github.com/ros2/launch/issues/478>`_)
+* Allow configuring logging directory through environment variables (`#460 <https://github.com/ros2/launch/issues/460>`_) (`#477 <https://github.com/ros2/launch/issues/477>`_)
+* Contributors: Christophe Bedard, Felix Divo, Michel Hidalgo, Tom Greier, Victor Lopez, Vitaliy Bondar
+
+0.10.4 (2020-12-08)
+-------------------
+* Fix dollar symbols in substitution grammar (`#461 <https://github.com/ros2/launch/issues/461>`_) (`#472 <https://github.com/ros2/launch/issues/472>`_)
+* Delete unnecessary loading of 'launch.frontend.interpolate_substitution_method' entry point that was never used (`#434 <https://github.com/ros2/launch/issues/434>`_) (`#463 <https://github.com/ros2/launch/issues/463>`_)
+* Contributors: Ivan Santiago Paunovic, Jacob Perron
+
+0.10.3 (2020-08-27)
+-------------------
+* Add new conditions for checking launch configuration values (`#453 <https://github.com/ros2/launch/issues/453>`_) (`#457 <https://github.com/ros2/launch/issues/457>`_)
+* Refactor launch service run_async loop to wait on futures and queued events (`#449 <https://github.com/ros2/launch/issues/449>`_) (`#455 <https://github.com/ros2/launch/issues/455>`_)
+* Add pytest.ini so local tests don't display warning (`#428 <https://github.com/ros2/launch/issues/428>`_)
+* Contributors: Chris Lalancette, Jacob Perron
 
 0.10.2 (2020-05-26)
 -------------------

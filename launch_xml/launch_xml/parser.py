@@ -15,8 +15,6 @@
 """Module for XML Parser class."""
 
 import io
-from typing import Set
-from typing import Text
 from typing import Union
 import xml.etree.ElementTree as ET
 
@@ -35,8 +33,3 @@ class Parser(frontend.Parser):
     ) -> (Entity, 'Parser'):
         """Return entity loaded from XML file."""
         return (Entity(ET.parse(file).getroot()), cls())
-
-    @classmethod
-    def get_file_extensions(cls) -> Set[Text]:
-        """Return the set of file extensions known to this parser."""
-        return {'launch.xml', 'xml', 'launch'}

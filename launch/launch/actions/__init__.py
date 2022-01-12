@@ -15,9 +15,7 @@
 """actions Module."""
 
 from .declare_launch_argument import DeclareLaunchArgument
-from .append_environment_variable import AppendEnvironmentVariable  # noqa: I100
 from .emit_event import EmitEvent
-from .execute_local import ExecuteLocal
 from .execute_process import ExecuteProcess
 from .group_action import GroupAction
 from .include_launch_description import IncludeLaunchDescription
@@ -27,7 +25,6 @@ from .opaque_function import OpaqueFunction
 from .pop_launch_configurations import PopLaunchConfigurations
 from .push_launch_configurations import PushLaunchConfigurations
 from .register_event_handler import RegisterEventHandler
-from .reset_launch_configurations import ResetLaunchConfigurations
 from .set_environment_variable import SetEnvironmentVariable
 from .set_launch_configuration import SetLaunchConfiguration
 from .shutdown_action import Shutdown
@@ -37,10 +34,8 @@ from .unset_environment_variable import UnsetEnvironmentVariable
 from .unset_launch_configuration import UnsetLaunchConfiguration
 
 __all__ = [
-    'AppendEnvironmentVariable',
     'DeclareLaunchArgument',
     'EmitEvent',
-    'ExecuteLocal',
     'ExecuteProcess',
     'GroupAction',
     'IncludeLaunchDescription',
@@ -49,7 +44,6 @@ __all__ = [
     'OpaqueFunction',
     'PopLaunchConfigurations',
     'PushLaunchConfigurations',
-    'ResetLaunchConfigurations',
     'RegisterEventHandler',
     'SetEnvironmentVariable',
     'SetLaunchConfiguration',

@@ -14,7 +14,6 @@
 
 """Module for the DeclareLaunchArgument action."""
 
-from typing import Iterable
 from typing import List
 from typing import Optional
 from typing import Text
@@ -75,32 +74,6 @@ class DeclareLaunchArgument(Action):
     exception is raised because none is set and there is no default value.
     However, the pre-condition does not guarantee that the argument was visible
     if behind condition or situational inclusions.
-
-    .. doctest::
-
-        >>> ld = LaunchDescription([
-        ...     DeclareLaunchArgument('simple_argument'),
-        ...     DeclareLaunchArgument('with_default_value', default_value='default'),
-        ...     DeclareLaunchArgument(
-        ...         'with_default_and_description',
-        ...         default_value='some_default',
-        ...         description='this argument is used to configure ...'),
-        ...     DeclareLaunchArgument(
-        ...         'mode',
-        ...         default_value='A',
-        ...         description='Choose between mode A and mode B',
-        ...         choices=['A', 'B']),
-        ...     # other actions here, ...
-        ... ])
-
-    .. code-block:: xml
-
-        <launch>
-            <arg name="simple_argument"/>
-            <arg name="with_default_value" default_value="default"/>
-            <arg name="with_default_and_description" default_value="some_default"
-                description="this argument is used to configure ..."/>
-        </launch>
     """
 
     def __init__(
@@ -109,7 +82,7 @@ class DeclareLaunchArgument(Action):
         *,
         default_value: Optional[SomeSubstitutionsType] = None,
         description: Optional[Text] = None,
-        choices: Iterable[Text] = None,
+        choices: List[Text] = None,
         **kwargs
     ) -> None:
         """Create a DeclareLaunchArgument action."""
@@ -128,7 +101,7 @@ class DeclareLaunchArgument(Action):
                     'Provided choices arg is empty. Use None to ignore the choice list.')
 
             # Check if a non substitution default value is provided and is a valid choice
-            if default_value is not None and not isinstance(default_value, (Substitution, list)):
+            if default_value is not None and not isinstance(default_value, Substitution):
                 if default_value not in choices:
                     self.__logger.error(
                         'Provided default_value "{}" is not in provided choices "{}".'.format(
@@ -146,8 +119,6 @@ class DeclareLaunchArgument(Action):
         else:
             self.__description = description
             if choices is not None:
-                if not self.__description.endswith('.'):
-                    self.__description += '.'
                 self.__description += ' Valid choices are: ' + str(choices)
 
         self.__choices = choices
@@ -173,11 +144,9 @@ class DeclareLaunchArgument(Action):
         description = entity.get_attr('description', optional=True)
         if description is not None:
             kwargs['description'] = parser.escape_characters(description)
-        choices = entity.get_attr('choice', data_type=List[Entity], optional=True)
+        choices = entity.get_attr('choices', optional=True)
         if choices is not None:
-            kwargs['choices'] = [
-                parser.escape_characters(choice.get_attr('value')) for choice in choices
-            ]
+            kwargs['choices'] = parser.escape_characters(choices)
         return cls, kwargs
 
     @property

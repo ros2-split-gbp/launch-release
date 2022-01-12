@@ -111,7 +111,7 @@ class LaunchTestItem(pytest.Item):
     def repr_failure(self, excinfo):
         if isinstance(excinfo.value, LaunchTestFailure):
             return LaunchTestFailureRepr(failures=[
-                (test_case.id(), formatted_error)
+                (f'{type(test_case).__name__}.{test_case._testMethodName}', formatted_error)
                 for test_run, test_result in excinfo.value.results.items()
                 for test_case, formatted_error in (test_result.errors + test_result.failures)
                 if isinstance(test_case, TestCase) and not test_result.wasSuccessful()
@@ -189,7 +189,7 @@ def pytest_launch_collect_makemodule(path, parent, entrypoint):
 
 
 def pytest_addhooks(pluginmanager):
-    from launch_testing.pytest import hookspecs
+    import launch_testing.pytest.hookspecs as hookspecs
     pluginmanager.add_hookspecs(hookspecs)
 
 

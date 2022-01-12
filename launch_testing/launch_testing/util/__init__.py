@@ -30,12 +30,9 @@ def KeepAliveProc():
     another process to keep the launch service alive while the tests are running.
     """
     script = """
-import signal
-import time
-
 try:
     while True:
-        time.sleep(1)
+        pass
 except KeyboardInterrupt:
     pass
 """
