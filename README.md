@@ -1,3 +1,35 @@
+## launch (rolling) - 1.0.1-1
+
+The packages in the `launch` repository were released into the `rolling` distro by running `/home/parallels/.local/bin/bloom-release -r rolling launch` on `Thu, 14 Apr 2022 01:19:04 -0000`
+
+These packages were released:
+- `launch`
+- `launch_pytest`
+- `launch_testing`
+- `launch_testing_ament_cmake`
+- `launch_xml`
+- `launch_yaml`
+
+These packages were explicitly ignored:
+- `test_launch_testing`
+
+Version of package(s) in repository `launch`:
+
+- upstream repository: https://github.com/ros2/launch.git
+- release repository: https://github.com/ros2-gbp/launch-release.git
+- rosdistro version: `0.23.1-1`
+- old version: `1.0.0-1`
+- new version: `1.0.1-1`
+
+Versions of tools used:
+
+- bloom version: `0.10.7`
+- catkin_pkg version: `0.4.24`
+- rosdep version: `0.21.0`
+- rosdistro version: `0.8.3`
+- vcstools version: `0.1.42`
+
+
 ## launch (rolling) - 1.0.0-1
 
 The packages in the `launch` repository were released into the `rolling` distro by running `/Users/william/.pyenv/versions/3.8.0/bin/bloom-release -r rolling -t rolling launch` on `Tue, 12 Apr 2022 22:55:07 -0000`
