@@ -1,0 +1,12 @@
+Source: ros-humble-launch-pytest
+Section: misc
+Priority: optional
+Maintainer: Aditya Pande <aditya.pande@openrobotics.org>
+Build-Depends: debhelper (>= 9.0.0), ros-humble-ament-copyright <!nocheck>, ros-humble-ament-flake8 <!nocheck>, ros-humble-ament-pep257 <!nocheck>, ros-humble-launch <!nocheck>, ros-humble-ros-workspace, python3-all, python3-setuptools, dh-python
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-humble-launch-pytest
+Architecture: any
+Depends: ${python3:Depends}, ${misc:Depends}, python3-pytest, ros-humble-ament-index-python, ros-humble-launch, ros-humble-launch-testing, ros-humble-osrf-pycommon, ros-humble-ros-workspace
+Description: A package to create tests which involve launch files and multiple processes.
