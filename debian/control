@@ -1,0 +1,12 @@
+Source: ros-galactic-launch-yaml
+Section: misc
+Priority: optional
+Maintainer: William Woodall <william@osrfoundation.org>
+Build-Depends: debhelper (>= 9.0.0), python3-pytest <!nocheck>, ros-galactic-ament-copyright <!nocheck>, ros-galactic-ament-flake8 <!nocheck>, ros-galactic-ament-pep257 <!nocheck>, ros-galactic-launch, ros-galactic-ros-workspace, python3-all, python3-setuptools, dh-python
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-galactic-launch-yaml
+Architecture: any
+Depends: ${python3:Depends}, ${misc:Depends}, ros-galactic-launch, ros-galactic-ros-workspace
+Description: YAML frontend for the launch package.
