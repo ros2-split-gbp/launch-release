@@ -14,6 +14,8 @@
 
 """Module for the UnsetEnvironmentVariable action."""
 
+import os
+
 from typing import List
 
 from ..action import Action
@@ -59,6 +61,6 @@ class UnsetEnvironmentVariable(Action):
     def execute(self, context: LaunchContext) -> None:
         """Execute the action."""
         name = perform_substitutions(context, self.name)
-        if name in context.environment:
-            del context.environment[name]
+        if name in os.environ:
+            del os.environ[name]
         return None

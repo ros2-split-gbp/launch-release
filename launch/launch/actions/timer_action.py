@@ -62,16 +62,10 @@ class TimerAction(Action):
         *,
         period: Union[float, SomeSubstitutionsType],
         actions: Iterable[LaunchDescriptionEntity],
-        cancel_on_shutdown: Union[bool, SomeSubstitutionsType] = True,
+        cancel_on_shutdown: [bool, SomeSubstitutionsType] = True,
         **kwargs
     ) -> None:
-        """
-        Create a TimerAction.
-
-        :param period: the time (in seconds) to set the timer for
-        :param actions: an iterable containing actions to be executed on timeout
-        :param cancel_on_shutdown: whether to cancel the timer on launch shutdown
-        """
+        """Create a TimerAction."""
         super().__init__(**kwargs)
         period_types = list(SomeSubstitutionsType_types_tuple) + [float]
         ensure_argument_type(period, period_types, 'period', 'TimerAction')
@@ -84,22 +78,22 @@ class TimerAction(Action):
                 stacklevel=2)
         self.__period = type_utils.normalize_typed_substitution(period, float)
         self.__actions = actions
-        self.__context_locals: Dict[Text, Any] = {}
-        self._completed_future: Optional[asyncio.Future] = None
+        self.__context_locals = {}  # type: Dict[Text, Any]
+        self.__completed_future = None  # type: Optional[asyncio.Future]
         self.__canceled = False
-        self._canceled_future: Optional[asyncio.Future] = None
+        self.__canceled_future = None  # type: Optional[asyncio.Future]
         self.__cancel_on_shutdown = type_utils.normalize_typed_substitution(
             cancel_on_shutdown, bool)
         self.__logger = launch.logging.get_logger(__name__)
 
-    async def _wait_to_fire_event(self, context):
+    async def __wait_to_fire_event(self, context):
         done, pending = await asyncio.wait(
-            [self._canceled_future],
+            [self.__canceled_future],
             timeout=type_utils.perform_typed_substitution(context, self.__period, float),
         )
-        if not self._canceled_future.done():
+        if not self.__canceled_future.done():
             await context.emit_event(TimerEvent(timer_action=self))
-        self._completed_future.set_result(None)
+        self.__completed_future.set_result(None)
 
     @classmethod
     def parse(
@@ -153,8 +147,8 @@ class TimerAction(Action):
         another coroutine.
         """
         self.__canceled = True
-        if self._canceled_future is not None and not self._canceled_future.done():
-            self._canceled_future.set_result(True)
+        if self.__canceled_future is not None and not self.__canceled_future.done():
+            self.__canceled_future.set_result(True)
         return None
 
     def execute(self, context: LaunchContext) -> Optional[List['Action']]:
@@ -166,15 +160,15 @@ class TimerAction(Action):
         - create a task for the coroutine that waits until canceled or timeout
         - coroutine asynchronously fires event after timeout, if not canceled
         """
-        self._completed_future = create_future(context.asyncio_loop)
-        self._canceled_future = create_future(context.asyncio_loop)
+        self.__completed_future = create_future(context.asyncio_loop)
+        self.__canceled_future = create_future(context.asyncio_loop)
 
         if self.__canceled:
             # In this case, the action was canceled before being executed.
             self.__logger.debug(
                 'timer {} not waiting because it was canceled before being executed'.format(self),
             )
-            self._completed_future.set_result(None)
+            self.__completed_future.set_result(None)
             return None
 
         # Once per context, install the general purpose OnTimerEvent event handler.
@@ -191,7 +185,7 @@ class TimerAction(Action):
 
         # Capture the current context locals so the yielded actions can make use of them too.
         self.__context_locals = dict(context.get_locals_as_dict())  # Capture a copy
-        context.asyncio_loop.create_task(self._wait_to_fire_event(context))
+        context.asyncio_loop.create_task(self.__wait_to_fire_event(context))
 
         # By default, the 'shutdown' event will cause timers to cancel so they don't hold up the
         # launch process
@@ -207,4 +201,4 @@ class TimerAction(Action):
 
     def get_asyncio_future(self) -> Optional[asyncio.Future]:
         """Return an asyncio Future, used to let the launch system know when we're done."""
-        return self._completed_future
+        return self.__completed_future

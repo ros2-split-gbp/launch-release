@@ -292,6 +292,8 @@ class LaunchTestRunner(object):
 
             # Check for extra args in generate_test_description
             for argname in base_args:
+                if argname == 'ready_fn':
+                    continue
                 if argname not in run.param_args.keys():
                     raise Exception(
                         "generate_test_description has unexpected extra argument '{}'".format(

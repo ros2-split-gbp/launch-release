@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import copy
-import pathlib
 from unittest import TestCase
 
 from _pytest._code.code import ReprFileLocation
@@ -22,13 +21,6 @@ import pytest
 
 from ..loader import LoadTestsFromPythonModule
 from ..test_runner import LaunchTestRunner
-
-
-def _pytest_version_ge(major, minor=0, patch=0):
-    """Return True if pytest version is >= the given version."""
-    pytest_version = tuple([int(v) for v in pytest.__version__.split('.')])
-    assert pytest_version
-    return pytest_version >= (major, minor, patch)
 
 
 class LaunchTestFailure(Exception):
@@ -127,42 +119,29 @@ class LaunchTestItem(pytest.Item):
         return super().repr_failure(excinfo)
 
     def reportinfo(self):
-        if _pytest_version_ge(7):
-            path = self.path
-        else:
-            path = self.fspath
-        return path, 0, 'launch tests: {}'.format(self.name)
+        return self.fspath, 0, 'launch tests: {}'.format(self.name)
 
 
 class LaunchTestModule(pytest.File):
 
-    def __init__(self, *args, **kwargs):
-        if _pytest_version_ge(7):
-            if 'fspath' in kwargs:
-                if kwargs['fspath'] is not None:
-                    kwargs['path'] = pathlib.Path(kwargs['fspath'])
-                del kwargs['fspath']
-        super().__init__(*args, **kwargs)
+    def __init__(self, parent, *, fspath):
+        super().__init__(parent=parent, fspath=fspath)
 
     @classmethod
-    def from_parent(cls, *args, **kwargs):
+    def from_parent(cls, parent, *, fspath):
         """Override from_parent for compatibility."""
         # pytest.File.from_parent didn't exist before pytest 5.4
-        if _pytest_version_ge(5, 4):
-            return super().from_parent(*args, **kwargs)
-        args_without_parent = args[1:]
-        return cls(*args_without_parent, **kwargs)
+        if hasattr(super(), 'from_parent'):
+            instance = getattr(super(), 'from_parent')(parent=parent, fspath=fspath)
+        else:
+            instance = cls(parent=parent, fspath=fspath)
+        return instance
 
     def makeitem(self, *args, **kwargs):
         return LaunchTestItem.from_parent(*args, **kwargs)
 
     def collect(self):
-        if _pytest_version_ge(7):
-            # self.path exists since 7
-            from _pytest.pathlib import import_path
-            module = import_path(self.path, root=None)
-        else:
-            module = self.fspath.pyimport()
+        module = self.fspath.pyimport()
         yield self.makeitem(
             name=module.__name__, parent=self,
             test_runs=LoadTestsFromPythonModule(
@@ -173,13 +152,7 @@ class LaunchTestModule(pytest.File):
 
 def find_launch_test_entrypoint(path):
     try:
-        if _pytest_version_ge(7):
-            from _pytest.pathlib import import_path
-            module = import_path(path, root=None)
-        else:
-            # Assume we got legacy path in earlier versions of pytest
-            module = path.pyimport()
-        return getattr(module, 'generate_test_description', None)
+        return getattr(path.pyimport(), 'generate_test_description', None)
     except SyntaxError:
         return None
 
@@ -193,20 +166,18 @@ def pytest_pycollect_makemodule(path, parent):
         )
         if module is not None:
             return module
-
-    if _pytest_version_ge(7):
-        path = pathlib.Path(path)
-        if path.name == '__init__.py':
-            return pytest.Package.from_parent(parent, path=path)
-        return pytest.Module.from_parent(parent=parent, path=path)
-    elif _pytest_version_ge(5, 4):
-        if path.basename == '__init__.py':
+    if path.basename == '__init__.py':
+        try:
+            # since https://docs.pytest.org/en/latest/changelog.html#deprecations
+            # todo: remove fallback once all platforms use pytest >=5.4
             return pytest.Package.from_parent(parent, fspath=path)
-        return pytest.Module.from_parent(parent, fspath=path)
-    else:
-        # todo: remove fallback once all platforms use pytest >=5.4
-        if path.basename == '__init__.py':
+        except AttributeError:
             return pytest.Package(path, parent)
+    try:
+        # since https://docs.pytest.org/en/latest/changelog.html#deprecations
+        # todo: remove fallback once all platforms use pytest >=5.4
+        return pytest.Module.from_parent(parent, fspath=path)
+    except AttributeError:
         return pytest.Module(path, parent)
 
 
@@ -214,15 +185,11 @@ def pytest_pycollect_makemodule(path, parent):
 def pytest_launch_collect_makemodule(path, parent, entrypoint):
     marks = getattr(entrypoint, 'pytestmark', [])
     if marks and any(m.name == 'launch_test' for m in marks):
-        if _pytest_version_ge(7):
-            path = pathlib.Path(path)
-            return LaunchTestModule.from_parent(parent=parent, path=path)
-        else:
-            return LaunchTestModule.from_parent(parent=parent, fspath=path)
+        return LaunchTestModule.from_parent(parent, fspath=path)
 
 
 def pytest_addhooks(pluginmanager):
-    from launch_testing.pytest import hookspecs
+    import launch_testing.pytest.hookspecs as hookspecs
     pluginmanager.add_hookspecs(hookspecs)
 
 

@@ -24,13 +24,13 @@ import pytest
 
 def test_bad_construction():
     """Test bad construction parameters."""
-    with pytest.raises(TypeError):
+    with pytest.raises(ValueError):
         OnExecutionComplete(
             target_action='not-an-action',
             on_completion=lambda *args: None
         )
 
-    with pytest.raises(TypeError):
+    with pytest.raises(ValueError):
         OnExecutionComplete(
             target_action=LogInfo(msg='some message'),
             on_completion='not-a-callable-nor-an-action-iterable'
