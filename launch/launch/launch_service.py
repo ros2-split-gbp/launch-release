@@ -86,6 +86,7 @@ class LaunchService:
         # it being set to None by run() as it exits.
         self.__loop_from_run_thread_lock = threading.RLock()
         self.__loop_from_run_thread = None
+        self.__this_task = None
 
         # Used to indicate when shutdown() has been called.
         self.__shutting_down = False
@@ -183,6 +184,7 @@ class LaunchService:
             except AttributeError:
                 this_task = asyncio.Task.current_task(this_loop)
 
+            self.__this_task = this_task
             # Setup custom signal handlers for SIGINT, SIGTERM and maybe SIGQUIT.
             sigint_received = False
 
@@ -288,7 +290,9 @@ class LaunchService:
                     # the queue
                     is_idle = self._is_idle()  # self._entity_future_pairs is pruned here
                     if not self.__shutting_down and shutdown_when_idle and is_idle:
-                        ret = await self._shutdown(reason='idle', due_to_sigint=False)
+                        ret = self._shutdown(reason='idle', due_to_sigint=False)
+                        if ret is not None:
+                            ret = await ret
                         assert ret is None, ret
                         continue
 
@@ -317,10 +321,19 @@ class LaunchService:
                     entity_futures.append(process_one_event_task)
 
                     # Wait on events and futures
-                    await asyncio.wait(
+                    completed_tasks, _ = await asyncio.wait(
                         entity_futures,
                         return_when=asyncio.FIRST_COMPLETED
                     )
+                    # Propagate exception from completed tasks
+                    completed_tasks_exceptions = [task.exception() for task in completed_tasks]
+                    completed_tasks_exceptions = list(filter(None, completed_tasks_exceptions))
+                    if completed_tasks_exceptions:
+                        self.__logger.debug('An exception was raised in an async action/event')
+                        # in case there is more than one completed_task, log other exceptions
+                        for completed_tasks_exception in completed_tasks_exceptions[1:]:
+                            self.__logger.error(completed_tasks_exception)
+                        raise completed_tasks_exceptions[0]
 
                 except KeyboardInterrupt:
                     continue
@@ -332,7 +345,9 @@ class LaunchService:
                     msg = 'Caught exception in launch (see debug for traceback): {}'.format(exc)
                     self.__logger.debug(traceback.format_exc())
                     self.__logger.error(msg)
-                    ret = await self._shutdown(reason=msg, due_to_sigint=False)
+                    ret = self._shutdown(reason=msg, due_to_sigint=False)
+                    if ret is not None:
+                        ret = await ret
                     assert ret is None, ret
                     return_code = 1
                     # keep running to let things shutdown properly
@@ -413,3 +428,13 @@ class LaunchService:
     def context(self):
         """Getter for context."""
         return self.__context
+
+    @property
+    def event_loop(self):
+        """Getter for the event loop being used in the thread running the launch service."""
+        return self.__loop_from_run_thread
+
+    @property
+    def task(self):
+        """Return asyncio task associated with this launch service."""
+        return self.__this_task

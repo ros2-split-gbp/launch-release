@@ -1,6 +1,4 @@
-#!/usr/bin/env python3
-
-# Copyright 2019 Apex.AI, Inc.
+# Copyright 2020 Southwest Research Institute, All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,20 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+# DISTRIBUTION A. Approved for public release; distribution unlimited.
+# OPSEC #4584.
 
-import sys
-import time
+"""descriptions Module."""
 
+from .executable import Executable
 
-# This process pretends to do some simple setup, then pretends to do some simple work,
-# then shuts itself down automatically
-if __name__ == "__main__":
-
-    if "--silent" in sys.argv[1:]:
-        sys.exit(1)
-
-    if '--exception' in sys.argv[1:]:
-        raise Exception("Process had a pretend error")
-
-    print("Exiting with a code")
-    sys.exit(1) 
+__all__ = [
+    'Executable'
+]

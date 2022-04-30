@@ -2,7 +2,42 @@
 Changelog for package launch_testing_ament_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.17.1 (2022-04-28)
+1.1.0 (2022-04-29)
+------------------
+
+1.0.1 (2022-04-13)
+------------------
+
+1.0.0 (2022-04-12)
+------------------
+
+0.23.1 (2022-04-08)
+-------------------
+
+0.23.0 (2022-03-30)
+-------------------
+
+0.22.0 (2022-03-28)
+-------------------
+
+0.21.1 (2022-03-01)
+-------------------
+* [launch_testing_ament_cmake] Add test label (`#584 <https://github.com/ros2/launch/issues/584>`_)
+* Contributors: Keisuke Shima
+
+0.21.0 (2022-01-14)
+-------------------
+
+0.20.0 (2021-11-29)
+-------------------
+* Update maintainers to Aditya Pande and Michel Hidalgo (`#559 <https://github.com/ros2/launch/issues/559>`_)
+* Updated maintainers (`#555 <https://github.com/ros2/launch/issues/555>`_)
+* Contributors: Aditya Pande, Audrow Nash
+
+0.19.0 (2021-07-15)
+-------------------
+
+0.18.0 (2021-06-18)
 -------------------
 
 0.17.0 (2021-04-06)
