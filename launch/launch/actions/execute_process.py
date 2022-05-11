@@ -15,6 +15,7 @@
 """Module for the ExecuteProcess action."""
 
 import shlex
+import threading
 from typing import Dict
 from typing import Iterable
 from typing import List
@@ -29,6 +30,9 @@ from ..frontend import expose_action
 from ..frontend import Parser
 from ..some_substitutions_type import SomeSubstitutionsType
 from ..substitutions import TextSubstitution
+
+_global_process_counter_lock = threading.Lock()
+_global_process_counter = 0  # in Python3, this number is unbounded (no rollover)
 
 
 @expose_action('executable')
