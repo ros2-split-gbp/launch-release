@@ -1,3 +1,35 @@
+## launch (humble) - 1.0.2-1
+
+The packages in the `launch` repository were released into the `humble` distro by running `/usr/local/bin/bloom-release --non-interactive -r humble launch` on `Wed, 11 May 2022 01:24:09 -0000`
+
+These packages were released:
+- `launch`
+- `launch_pytest`
+- `launch_testing`
+- `launch_testing_ament_cmake`
+- `launch_xml`
+- `launch_yaml`
+
+These packages were explicitly ignored:
+- `test_launch_testing`
+
+Version of package(s) in repository `launch`:
+
+- upstream repository: https://github.com/ros2/launch.git
+- release repository: https://github.com/ros2-gbp/launch-release.git
+- rosdistro version: `1.0.1-2`
+- old version: `1.0.1-2`
+- new version: `1.0.2-1`
+
+Versions of tools used:
+
+- bloom version: `0.11.1`
+- catkin_pkg version: `0.4.24`
+- rosdep version: `0.21.0`
+- rosdistro version: `0.8.3`
+- vcstools version: `0.1.42`
+
+
 ## launch (rolling) - 1.1.0-1
 
 The packages in the `launch` repository were released into the `rolling` distro by running `/home/parallels/.local/bin/bloom-release -r rolling launch` on `Sat, 30 Apr 2022 00:25:43 -0000`
