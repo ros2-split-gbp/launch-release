@@ -2,74 +2,26 @@
 Changelog for package launch_testing_ament_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.0.2 (2022-05-10)
-------------------
-
-1.0.1 (2022-04-13)
-------------------
-
-1.0.0 (2022-04-12)
-------------------
-
-0.23.1 (2022-04-08)
+0.10.9 (2022-09-12)
 -------------------
 
-0.23.0 (2022-03-30)
+0.10.8 (2022-01-12)
 -------------------
 
-0.22.0 (2022-03-28)
+0.10.7 (2021-11-12)
 -------------------
 
-0.21.1 (2022-03-01)
--------------------
-* [launch_testing_ament_cmake] Add test label (`#584 <https://github.com/ros2/launch/issues/584>`_)
-* Contributors: Keisuke Shima
-
-0.21.0 (2022-01-14)
+0.10.6 (2021-08-31)
 -------------------
 
-0.20.0 (2021-11-29)
--------------------
-* Update maintainers to Aditya Pande and Michel Hidalgo (`#559 <https://github.com/ros2/launch/issues/559>`_)
-* Updated maintainers (`#555 <https://github.com/ros2/launch/issues/555>`_)
-* Contributors: Aditya Pande, Audrow Nash
-
-0.19.0 (2021-07-15)
+0.10.5 (2021-04-14)
 -------------------
 
-0.18.0 (2021-06-18)
+0.10.4 (2020-12-08)
 -------------------
 
-0.17.0 (2021-04-06)
+0.10.3 (2020-08-27)
 -------------------
-
-0.16.0 (2021-03-19)
--------------------
-
-0.15.0 (2021-01-25)
--------------------
-
-0.14.0 (2020-12-08)
--------------------
-
-0.13.0 (2020-11-04)
--------------------
-* Update package maintainers (`#465 <https://github.com/ros2/launch/issues/465>`_)
-* Add bsd license to launch due to files from roslaunch (`#456 <https://github.com/ros2/launch/issues/456>`_)
-* Contributors: Michel Hidalgo, William Woodall
-
-0.12.0 (2020-08-18)
--------------------
-
-0.11.1 (2020-08-14)
--------------------
-* Use launch_test CMake target as output file basename (`#448 <https://github.com/ros2/launch/issues/448>`_)
-* Contributors: Michel Hidalgo
-
-0.11.0 (2020-08-04)
--------------------
-* Find Python debug interpreter on Windows (`#437 <https://github.com/ros2/launch/issues/437>`_)
-* Contributors: Dirk Thomas
 
 0.10.2 (2020-05-26)
 -------------------

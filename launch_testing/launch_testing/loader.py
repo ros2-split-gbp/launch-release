@@ -42,34 +42,49 @@ def _normalize_ld(launch_description_fn):
             return result, {}
 
     def wrapper(**kwargs):
-        # This is a new-style launch_description which should contain a ReadyToTest action
-        ready_fn = kwargs.pop('ready_fn')
-        result = normalize(launch_description_fn(**kwargs))
-        # Fish the ReadyToTest action out of the launch description and plumb our
-        # ready_fn to it
 
-        def iterate_ready_to_test_actions(entities):
-            """Recursively search LaunchDescription entities for all ReadyToTest actions."""
-            for entity in entities:
-                if isinstance(entity, ReadyToTest):
-                    yield entity
-                yield from iterate_ready_to_test_actions(
-                    entity.describe_sub_entities()
-                )
-                for conditional_sub_entity in entity.describe_conditional_sub_entities():
-                    yield from iterate_ready_to_test_actions(
-                        conditional_sub_entity[1]
-                    )
+        fn_args = inspect.getfullargspec(launch_description_fn)
 
-        try:
-            ready_action = next(e for e in iterate_ready_to_test_actions(result[0].entities))
-        except StopIteration:  # No ReadyToTest action found
-            raise Exception(
-                'generate_test_description functions must return '
-                'a LaunchDescription containing a ReadyToTest action'
+        if 'ready_fn' in fn_args.args + fn_args.kwonlyargs:
+            # This is an old-style launch_description function which expects ready_fn to be passed
+            # in to the function
+            # This type of launch description will be deprecated in the future.  Warn about it
+            # here
+            warnings.warn(
+                'Passing ready_fn as an argument to generate_test_description will '
+                'be removed in a future release.  Include a launch_testing.actions.ReadyToTest '
+                'action in the LaunchDescription instead.'
             )
-        ready_action._add_callback(ready_fn)
-        return result
+            return normalize(launch_description_fn(**kwargs))
+        else:
+            # This is a new-style launch_description which should contain a ReadyToTest action
+            ready_fn = kwargs.pop('ready_fn')
+            result = normalize(launch_description_fn(**kwargs))
+            # Fish the ReadyToTest action out of the launch description and plumb our
+            # ready_fn to it
+
+            def iterate_ready_to_test_actions(entities):
+                """Recursively search LaunchDescription entities for all ReadyToTest actions."""
+                for entity in entities:
+                    if isinstance(entity, ReadyToTest):
+                        yield entity
+                    yield from iterate_ready_to_test_actions(
+                        entity.describe_sub_entities()
+                    )
+                    for conditional_sub_entity in entity.describe_conditional_sub_entities():
+                        yield from iterate_ready_to_test_actions(
+                            conditional_sub_entity[1]
+                        )
+
+            try:
+                ready_action = next(e for e in iterate_ready_to_test_actions(result[0].entities))
+            except StopIteration:  # No ReadyToTest action found
+                raise Exception(
+                    'generate_test_description functions without a ready_fn argument must return '
+                    'a LaunchDescription containing a ReadyToTest action'
+                )
+            ready_action._add_callback(ready_fn)
+            return result
 
     return wrapper
 
@@ -104,13 +119,6 @@ class TestRun:
                 new_name = tc._testMethodName + self._format_params()
                 setattr(tc, '_testMethodName', new_name)
                 setattr(tc, new_name, test_method)
-
-        # Disable cleanup of test cases once they are run
-        for tc in itertools.chain(
-            _iterate_test_suites(pre_shutdown_tests),
-            _iterate_test_suites(post_shutdown_tests)
-        ):
-            tc._removeTestAtIndex = lambda *args, **kwargs: None
 
     @property
     def markers(self):
@@ -275,18 +283,6 @@ def _iterate_test_classes_in_test_suite(test_suite):
         if t.__class__ not in classes:
             classes.append(t.__class__)
             yield t.__class__
-
-
-def _iterate_test_suites(test_suite):
-    try:
-        iter(test_suite)
-    except TypeError:
-        pass
-    else:
-        if isinstance(test_suite, unittest.TestSuite):
-            yield test_suite
-        for test in test_suite:
-            yield from _iterate_test_suites(test)
 
 
 def _iterate_tests_in_test_suite(test_suite):
