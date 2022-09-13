@@ -19,7 +19,7 @@ Run the example by doing:
 launch_test test/launch_testing/examples/good_proc_launch_test.py
 ```
 
-`launch_test` will launch the nodes found in the `generate_test_description` function, run the tests from the `TestGoodProcess` class, shut down the launched nodes, and then run the tests from the `TestNodeOutput` class.
+`launch_test` will launch the nodes found in the `generate_test_description` function, run the tests from the `TestGoodProcess` class, shut down the launched nodes, and then run the tests from the `TestProcessOutput` class.
 
 #### The Launch Description
 
@@ -45,6 +45,7 @@ The launch description needs to include a `ReadyToTest` action to signal to the 
 In the above example, there is no need to delay the start of the tests so the `ReadyToTest` action is a peer to the process under test and will signal to the framework that it's safe to start around the same time the `ExecuteProcess` action is run.
 
 In older style tests, a function called `ready_fn` is declared as an argument to `generate_test_description` and must be plumbed into the launch description with an `OpaqueFunction`.
+This method has been fully replaced by the `ReadyToTest` action and is therefore deprecated.
 
 ```python
 def generate_test_description(ready_fn):
