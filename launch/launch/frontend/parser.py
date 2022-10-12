@@ -15,23 +15,16 @@
 
 """Module for Parser class and parsing methods."""
 
-import itertools
 import os.path
-import traceback
 from typing import List
 from typing import Optional
-from typing import Set
 from typing import Text
 from typing import TextIO
 from typing import Type
 from typing import TYPE_CHECKING
 from typing import Union
-import warnings
 
-try:
-    import importlib.metadata as importlib_metadata
-except ModuleNotFoundError:
-    import importlib_metadata
+from pkg_resources import iter_entry_points
 
 from .entity import Entity
 from .expose import instantiate_action
@@ -60,10 +53,8 @@ class Parser:
     Abstract class for parsing launch actions, substitutions and descriptions.
 
     Implementations of the parser class, should override the load method.
-    They could also override the parse_substitution and/or get_file_extensions methods, or not.
-    load_launch_extensions, parse_action, parse_description, get_available_extensions, may_parse,
-    is_filename_valid, get_parsers_from_filename and get_file_extensions_from_parsers are not
-    supposed to be overriden.
+    They could also override the parse_substitution method, or not.
+    load_launch_extensions, parse_action and parse_description are not suposed to be overrided.
     """
 
     extensions_loaded = False
@@ -73,36 +64,18 @@ class Parser:
     def load_launch_extensions(cls):
         """Load launch extensions, in order to get all the exposed substitutions and actions."""
         if cls.extensions_loaded is False:
-            entry_points = importlib_metadata.entry_points()
-            if hasattr(entry_points, 'select'):
-                groups = entry_points.select(group='launch.frontend.launch_extension')
-            else:
-                groups = entry_points.get('launch.frontend.launch_extension', [])
-            for entry_point in groups:
-                try:
-                    entry_point.load()
-                except Exception:
-                    warnings.warn(f'Failed to load the launch extension: {entry_point.name}\n'
-                                  f'{traceback.format_exc()}')
+            for entry_point in iter_entry_points('launch.frontend.launch_extension'):
+                entry_point.load()
             cls.extensions_loaded = True
 
     @classmethod
     def load_parser_implementations(cls):
         """Load all the available frontend entities."""
         if cls.frontend_parsers is None:
-            parsers = {}
-            entry_points = importlib_metadata.entry_points()
-            if hasattr(entry_points, 'select'):
-                groups = entry_points.select(group='launch.frontend.parser')
-            else:
-                groups = entry_points.get('launch.frontend.parser', [])
-            for entry_point in groups:
-                try:
-                    parsers[entry_point.name] = entry_point.load()
-                except Exception:
-                    warnings.warn(f'Failed to load the parser extension: {entry_point.name}\n'
-                                  f'{traceback.format_exc()}')
-            cls.frontend_parsers = dict(sorted(parsers.items()))
+            cls.frontend_parsers = {
+                entry_point.name: entry_point.load()
+                for entry_point in iter_entry_points('launch.frontend.parser')
+            }
 
     def parse_action(self, entity: Entity) -> Action:
         """Parse an action, using its registered parsing method."""
@@ -145,8 +118,6 @@ class Parser:
         extension: Text,
     ) -> bool:
         """Return an entity loaded with a markup file."""
-        warnings.warn(
-            'Parser.is_extension_valid is deprecated, use Parser.is_filename_valid instead')
         cls.load_parser_implementations()
         return extension in cls.frontend_parsers
 
@@ -156,55 +127,11 @@ class Parser:
         extension: Text,
     ) -> Optional[Type['Parser']]:
         """Return an entity loaded with a markup file."""
-        warnings.warn(
-            'Parser.get_parser_from_extension is deprecated, '
-            'use Parser.get_parsers_from_filename instead')
         cls.load_parser_implementations()
         try:
             return cls.frontend_parsers[extension]
         except KeyError:
             raise RuntimeError('Not recognized frontend implementation')
-
-    @classmethod
-    def may_parse(
-        cls,
-        filename: Text,
-    ) -> bool:
-        """Return `True` if the filename is valid for this parser."""
-        return any(filename.endswith('.' + ext) for ext in cls.get_file_extensions())
-
-    @classmethod
-    def is_filename_valid(
-        cls,
-        filename: Text,
-    ) -> bool:
-        """Return `True` if the filename is valid for any parser."""
-        cls.load_parser_implementations()
-        return any(
-            parser.may_parse(filename)
-            for parser in cls.frontend_parsers.values()
-        )
-
-    @classmethod
-    def get_parsers_from_filename(
-        cls,
-        filename: Text,
-    ) -> List[Type['Parser']]:
-        """Return a list of parsers which entity loaded with a markup file."""
-        cls.load_parser_implementations()
-        return [
-            parser for parser in cls.frontend_parsers.values()
-            if parser.may_parse(filename)
-        ]
-
-    @classmethod
-    def get_file_extensions_from_parsers(cls) -> Set[Type['Parser']]:
-        """Return a set of file extensions known to the parser implementations."""
-        cls.load_parser_implementations()
-        return set(itertools.chain.from_iterable(
-            parser_extension.get_file_extensions()
-            for parser_extension in cls.frontend_parsers.values()
-        ))
 
     @classmethod
     def load(
@@ -231,10 +158,12 @@ class Parser:
 
         try:
             filename = getattr(fileobj, 'name', '')
-            implementations = cls.get_parsers_from_filename(filename)
-            implementations += [
-                parser for parser in cls.frontend_parsers.values()
-                if parser not in implementations
+            # file extension without leading '.'
+            extension = os.path.splitext(filename)[1][1:]
+
+            sorted_parsers = sorted(cls.frontend_parsers.items())
+            implementations = [v for k, v in sorted_parsers if k == extension] + [
+                v for k, v in sorted_parsers if k != extension
             ]
 
             exceptions = []
@@ -244,15 +173,8 @@ class Parser:
                 except Exception as ex:
                     exceptions.append(ex)
                     fileobj.seek(0)
-            # file extension without leading '.'
-            extension = os.path.splitext(filename)[1][1:]
-            extension = '' if not cls.is_filename_valid(filename) else extension
+            extension = '' if not cls.is_extension_valid(extension) else extension
             raise InvalidFrontendLaunchFileError(extension, likely_errors=exceptions)
         finally:
             if didopen:
                 fileobj.close()
-
-    @classmethod
-    def get_file_extensions(cls) -> Set[Text]:
-        """Return the set of file extensions known to this parser."""
-        return {}

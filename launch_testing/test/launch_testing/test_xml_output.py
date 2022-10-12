@@ -86,8 +86,6 @@ class TestXmlFunctions(unittest.TestCase):
         class TestHost(unittest.TestCase):
             pass
 
-        TestHost.__qualname__ = 'TestHost'  # as if it was defined in global scope
-
         for n, test_case in enumerate(test_case_list):
             setattr(TestHost, 'test_{}'.format(n), test_case)
 

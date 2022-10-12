@@ -5,7 +5,7 @@ package_name = 'launch'
 
 setup(
     name=package_name,
-    version='1.2.0',
+    version='0.10.10',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/' + package_name, ['package.xml']),
@@ -17,8 +17,8 @@ setup(
     zip_safe=True,
     author='Dirk Thomas',
     author_email='dthomas@osrfoundation.org',
-    maintainer='Aditya Pande, Michel Hidalgo',
-    maintainer_email='aditya.pande@openrobotics.org, michel@ekumenlabs.com',
+    maintainer='Dirk Thomas',
+    maintainer_email='dthomas@osrfoundation.org',
     url='https://github.com/ros2/launch',
     download_url='https://github.com/ros2/launch/releases',
     keywords=['ROS'],

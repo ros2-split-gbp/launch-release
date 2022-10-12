@@ -83,10 +83,9 @@ def unittestCaseToXml(test_result, test_case):
     class needs to be a launch_testing.TestResult class
     """
     case_xml = ET.Element('testcase')
-    full_methodname, _, qualifiers = test_case.id().partition(' ')
-    full_classname, _, methodname = full_methodname.rpartition('.')
+    full_classname = type(test_case).__module__ + '.' + type(test_case).__name__
     case_xml.set('classname', full_classname)
-    case_xml.set('name', (methodname + ' ' + qualifiers).strip())
+    case_xml.set('name', test_case._testMethodName)
     case_xml.set('time', str(round(test_result.testTimes[test_case], 3)))
 
     for failure in test_result.failures:
