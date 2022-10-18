@@ -44,22 +44,6 @@ The launch description needs to include a `ReadyToTest` action to signal to the 
 
 In the above example, there is no need to delay the start of the tests so the `ReadyToTest` action is a peer to the process under test and will signal to the framework that it's safe to start around the same time the `ExecuteProcess` action is run.
 
-In older style tests, a function called `ready_fn` is declared as an argument to `generate_test_description` and must be plumbed into the launch description with an `OpaqueFunction`.
-This method has been fully replaced by the `ReadyToTest` action and is therefore deprecated.
-
-```python
-def generate_test_description(ready_fn):
-
-    return launch.LaunchDescription([
-        launch.actions.ExecuteProcess(
-            cmd=[path_to_process],
-        ),
-
-        # Start tests right away - no need to wait for anything in this example
-        launch.actions.OpaqueFunction(function=lambda context: ready_fn()),
-    ])
-```
-
 #### Active Tests
 
 Any classes that inherit from `unittest.TestCase` and not decorated with the `post_shutdown_test` descriptor will be run concurrently with the proccess under test.
@@ -202,6 +186,21 @@ add_launch_test(
 
 ## Examples
 
+### `hello_world_launch_test.py`
+
+Usage:
+
+```sh
+launch_test test/launch_testing/examples/hello_world_launch_test.py
+```
+
+This test is a simple example on how to use the ``launch_testing``. 
+
+It launches a process and asserts that it prints "hello_world" to ``stdout`` using ``proc_output.assertWaitFor()``.
+Finally, it checks if the process exits normally (zero exit code).
+
+The ``@launch_testing.markers.keep_alive`` decorator ensures that the launch process stays alive long enough for the tests to run.
+
 ### `good_proc_launch_test.py`
 
 Usage:
@@ -210,8 +209,8 @@ Usage:
 launch_test test/launch_testing/examples/good_proc_launch_test.py
 ```
 
-This test checks a process called good_proc (source found in the [example_processes folder](example_processes)).
-good_proc is a simple python process that prints "Loop 1, Loop2, etc. every second until it's terminated with ctrl+c.
+This test checks a process called good_proc.py (source found in the [example_processes folder](example_processes)).
+good_proc.py is a simple python process that prints "Loop 1, Loop2, etc. every second until it's terminated with ctrl+c.
 The test will launch the process, wait for a few loops to complete by monitoring stdout, then terminate the process
 and run some post-shutdown checks.
 
