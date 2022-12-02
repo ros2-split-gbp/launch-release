@@ -152,7 +152,7 @@ def extract_type(data_type: AllowedTypesType) -> Tuple[ScalarTypesType, bool]:
     """
     is_list = False
     scalar_type: ScalarTypesType = cast(ScalarTypesType, data_type)
-    if is_typing_list(data_type) and getattr(data_type, '__args__', None):
+    if is_typing_list(data_type) and data_type.__args__:
         is_list = True
         scalar_type = data_type.__args__[0]  # type: ignore
     if is_valid_scalar_type(scalar_type) is False:
@@ -275,12 +275,7 @@ def coerce_to_type(
             else:
                 raise
 
-    if type_obj is bool:  # For bool coercion, allow '1' and '0' to be truthy and falsy
-        if value == '1':
-            value = 'true'
-        elif value == '0':
-            value = 'false'
-    else:
+    if type_obj is not bool:
         raise ValueError(
             'data_type is invalid. Expected one of: '
             'int, float, str, bool, List[int], List[float], List[str], List[bool]'

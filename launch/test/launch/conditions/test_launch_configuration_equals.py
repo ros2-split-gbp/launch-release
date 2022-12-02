@@ -17,8 +17,6 @@
 from launch.conditions import LaunchConfigurationEquals
 from launch.substitutions import TextSubstitution
 
-import pytest
-
 
 def test_launch_configuration_equals():
     """Test LaunchConfigurationEquals class."""
@@ -49,8 +47,7 @@ def test_launch_configuration_equals():
     ]
 
     for name, value, expected in test_cases:
-        with pytest.warns(UserWarning):
-            assert LaunchConfigurationEquals(
-                name,
-                [TextSubstitution(text=value)] if value is not None else None
-            ).evaluate(lc) is expected
+        assert LaunchConfigurationEquals(
+            name,
+            [TextSubstitution(text=value)] if value is not None else None
+        ).evaluate(lc) is expected

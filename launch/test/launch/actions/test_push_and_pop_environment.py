@@ -19,7 +19,6 @@ import os
 from launch import LaunchContext
 from launch.actions import PopEnvironment
 from launch.actions import PushEnvironment
-
 from temporary_environment import sandbox_environment_variables
 
 

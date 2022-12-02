@@ -2,102 +2,17 @@
 Changelog for package launch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.3.0 (2022-11-02)
-------------------
-* Expect deprecation warnings in tests (`#657 <https://github.com/ros2/launch/issues/657>`_)
-* Fix the restoring of os.environ to maintain type. (`#656 <https://github.com/ros2/launch/issues/656>`_)
-* Implement Any, All, Equals, and NotEquals substitutions (`#649 <https://github.com/ros2/launch/issues/649>`_)
-* add LaunchLogDir substitution, replacing log_dir frontend only substitution (`#652 <https://github.com/ros2/launch/issues/652>`_)
-* Add special cases to coerce "1" and "0" to bool when using bool coercion only (`#651 <https://github.com/ros2/launch/issues/651>`_)
-* Contributors: Chris Lalancette, Jacob Perron, William Woodall, methylDragon
-
-1.2.0 (2022-09-13)
-------------------
-* Update launch/test/launch/test_execute_local.py
-* Added unit test ensuring that output dictionary works with ExecuteLocal
-* Addresses issue `#588 <https://github.com/ros2/launch/issues/588>`_, allowing dict for 'output'
-* Contributors: Matthew Elwin, Michael Jeronimo
-
-1.1.0 (2022-04-29)
-------------------
-* Remove unused variables. (`#612 <https://github.com/ros2/launch/issues/612>`_)
-* Expose shutdown action to xml frontend (`#611 <https://github.com/ros2/launch/issues/611>`_)
-* Contributors: Aditya Pande, Chris Lalancette
-
-1.0.1 (2022-04-13)
-------------------
-* Sandbox environment in tests to fix repeated job failures (`#609 <https://github.com/ros2/launch/issues/609>`_)
-* Contributors: Shane Loretz
-
-1.0.0 (2022-04-12)
-------------------
-
-0.23.1 (2022-04-08)
+0.17.2 (2022-12-02)
 -------------------
-* Start Python faster in test_execute_processs_shutdown to avoid flakey failures (`#608 <https://github.com/ros2/launch/issues/608>`_)
-* Fix warnings from importlib_metdata on Python 3.10. (`#606 <https://github.com/ros2/launch/issues/606>`_)
-* Contributors: Chris Lalancette, Shane Loretz
+* Add missing exec dependency on PyYAML (`#682 <https://github.com/ros2/launch/issues/682>`_)
+* Support scoping environment variables (`#631 <https://github.com/ros2/launch/issues/631>`_)
+* Contributors: Jacob Perron, Scott K Logan
 
-0.23.0 (2022-03-30)
+0.17.1 (2022-04-28)
 -------------------
-* Add boolean substitutions (`#598 <https://github.com/ros2/launch/issues/598>`_)
-* Contributors: Kenji Miyake
-
-0.22.0 (2022-03-28)
--------------------
-* Support scoping environment variables (`#601 <https://github.com/ros2/launch/issues/601>`_)
-* Fix awaiting shutdown in launch context (`#603 <https://github.com/ros2/launch/issues/603>`_)
-* Fix parse respawn var (`#569 <https://github.com/ros2/launch/issues/569>`_)
-* Make the logged command pretty in ExecuteLocal (`#594 <https://github.com/ros2/launch/issues/594>`_)
-* Contributors: Jacob Perron, Kosuke Takeuchi
-
-0.21.1 (2022-03-01)
--------------------
-* 'output' is expanded as a substitution in XML/YAML files (`#577 <https://github.com/ros2/launch/issues/577>`_)
-* Skip warning test if warning already happend (`#585 <https://github.com/ros2/launch/issues/585>`_)
-* Contributors: Khush Jain, Shane Loretz
-
-0.21.0 (2022-01-14)
--------------------
-* Use asyncio.wait with timeout rather than sleep (`#576 <https://github.com/ros2/launch/issues/576>`_)
-* Make test_parser compatible with Python older than 3.8 (`#575 <https://github.com/ros2/launch/issues/575>`_)
-* Propagate exceptions of completed actions to launch service main loop (`#566 <https://github.com/ros2/launch/issues/566>`_)
-* Warn when loading launch extensions fails (`#572 <https://github.com/ros2/launch/issues/572>`_)
-* Add in two fixes for Jammy (`#571 <https://github.com/ros2/launch/issues/571>`_)
-* Contributors: Chris Lalancette, Scott K Logan, Shane Loretz, tumtom
-
-0.20.0 (2021-11-29)
--------------------
-* Evaluate math symbols and functions in python expression (`#557 <https://github.com/ros2/launch/issues/557>`_)
-* Document TimerAction params (`#558 <https://github.com/ros2/launch/issues/558>`_)
-* Improve launch arguments introspection (`#556 <https://github.com/ros2/launch/issues/556>`_)
-* Update maintainers to Aditya Pande and Michel Hidalgo (`#559 <https://github.com/ros2/launch/issues/559>`_)
-* Updated maintainers (`#555 <https://github.com/ros2/launch/issues/555>`_)
-* First prototype of native pytest plugin for launch based tests (`#528 <https://github.com/ros2/launch/issues/528>`_)
-* Allow for raw path specification in IncludeLaunchDescription (`#544 <https://github.com/ros2/launch/issues/544>`_)
-* Adding Executable description class (`#454 <https://github.com/ros2/launch/issues/454>`_)
-* event handlers: Allow to match the target action with a callable and not only with an object instance (`#540 <https://github.com/ros2/launch/issues/540>`_)
-* Add AppendEnvironmentVariable action (`#543 <https://github.com/ros2/launch/issues/543>`_)
-* Document EnvironmentVariable substitution resolution context caveat (`#541 <https://github.com/ros2/launch/issues/541>`_)
-* Feature clear launch configs (`#515 <https://github.com/ros2/launch/issues/515>`_)
-* Add examples to ExecuteProcess docs (`#525 <https://github.com/ros2/launch/issues/525>`_)
-* Fix `DeclareLaunchArgument` xml parsing and constructor (`#529 <https://github.com/ros2/launch/issues/529>`_)
-* Fix pytest run on Windows (`#526 <https://github.com/ros2/launch/issues/526>`_)
-* Improving docs (`#523 <https://github.com/ros2/launch/issues/523>`_)
-* Add filtering mechanism for executable prefix application (`#522 <https://github.com/ros2/launch/issues/522>`_)
-* Contributors: Aditya Pande, Audrow Nash, Cameron Miller, Christophe Bedard, David V. Lu!!, Derek Chopp, Immanuel Martini, Ivan Santiago Paunovic, roger-strain
-
-0.19.0 (2021-07-15)
--------------------
-* Make each parser extension provide a set of file extensions (`#516 <https://github.com/ros2/launch/issues/516>`_)
-* Contributors: Christophe Bedard
-
-0.18.0 (2021-06-18)
--------------------
-* Add missing exec dependency on PyYAML (`#493 <https://github.com/ros2/launch/issues/493>`_)
-* Refactor TimerAction to allow RosTimer to extend (`#512 <https://github.com/ros2/launch/issues/512>`_)
-* Improve (Not)Equals condition type hinting (`#510 <https://github.com/ros2/launch/issues/510>`_)
-* Contributors: HMellor, Rebecca Butler, Scott K Logan
+* Evaluate math symbols and functions in python expression (`#557 <https://github.com/ros2/launch/issues/557>`_) (`#563 <https://github.com/ros2/launch/issues/563>`_)
+* Allow for raw path specification in IncludeLaunchDescription (`#544 <https://github.com/ros2/launch/issues/544>`_) (`#549 <https://github.com/ros2/launch/issues/549>`_)
+* Contributors: David V. Lu!!, Immanuel Martini
 
 0.17.0 (2021-04-06)
 -------------------

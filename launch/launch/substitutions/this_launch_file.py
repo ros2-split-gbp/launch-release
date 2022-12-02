@@ -34,7 +34,7 @@ class ThisLaunchFile(Substitution):
 
     @classmethod
     def parse(cls, data: Iterable[SomeSubstitutionsType]):
-        """Parse `ThisLaunchFile` substitution."""
+        """Parse `EnviromentVariable` substitution."""
         if len(data) != 0:
             raise TypeError("filename substitution doesn't expect arguments")
         return cls, {}
