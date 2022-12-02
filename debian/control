@@ -1,0 +1,12 @@
+Source: ros-galactic-launch-testing-ament-cmake
+Section: misc
+Priority: optional
+Maintainer: William Woodall <william@osrfoundation.org>
+Build-Depends: debhelper (>= 9.0.0), ros-galactic-ament-cmake, ros-galactic-ament-cmake-copyright <!nocheck>, ros-galactic-launch-testing <!nocheck>, ros-galactic-python-cmake-module <!nocheck>, ros-galactic-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-galactic-launch-testing-ament-cmake
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-galactic-ament-cmake-test, ros-galactic-launch-testing, ros-galactic-python-cmake-module, ros-galactic-ros-workspace
+Description: A package providing cmake functions for running launch tests from the build.
