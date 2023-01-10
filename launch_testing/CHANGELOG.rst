@@ -2,20 +2,65 @@
 Changelog for package launch_testing
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.17.2 (2022-12-02)
--------------------
-* Inherit markers from generate_test_description (`#675 <https://github.com/ros2/launch/issues/675>`_)
-* Fix Typo (`#643 <https://github.com/ros2/launch/issues/643>`_)
-* Add compatitibility with pytest 7 (`#629 <https://github.com/ros2/launch/issues/629>`_)
-* Mention that ready_fn in generate_test_description is deprecated (`#623 <https://github.com/ros2/launch/issues/623>`_)
-* Switch to using a comprehension for process_names. (`#616 <https://github.com/ros2/launch/issues/616>`_)
-* Contributors: Bi0T1N, Chris Lalancette, Kenji Brameld, Scott K Logan, Shane Loretz
+1.0.4 (2023-01-10)
+------------------
+* Allow ReadyToTest() usage in event handler (`#681 <https://github.com/ros2/launch/issues/681>`_)
+* Inherit markers from generate_test_description (`#670 <https://github.com/ros2/launch/issues/670>`_) (`#674 <https://github.com/ros2/launch/issues/674>`_)
+* Contributors: Nikolai Morin, mergify[bot]
 
-0.17.1 (2022-04-28)
+1.0.3 (2022-10-18)
+------------------
+* Fix Typo (`#641 <https://github.com/ros2/launch/issues/641>`_) (`#644 <https://github.com/ros2/launch/issues/644>`_)
+* Switch to using a comprehension for process_names. (`#614 <https://github.com/ros2/launch/issues/614>`_) (`#615 <https://github.com/ros2/launch/issues/615>`_)
+* Contributors: mergify[bot]
+
+1.0.2 (2022-05-10)
+------------------
+
+1.0.1 (2022-04-13)
+------------------
+
+1.0.0 (2022-04-12)
+------------------
+* Removed the deprecated `ready_fn` feature (`#589 <https://github.com/ros2/launch/issues/589>`_)
+* Contributors: William Woodall
+
+0.23.1 (2022-04-08)
 -------------------
-* Fix launch_testing README.md proc keyword to process. (`#554 <https://github.com/ros2/launch/issues/554>`_) (`#561 <https://github.com/ros2/launch/issues/561>`_)
-  Co-authored-by: Michael McConnell <Michael.McConnell-2@leidos.com>
-* Contributors: Jacob Perron
+
+0.23.0 (2022-03-30)
+-------------------
+
+0.22.0 (2022-03-28)
+-------------------
+
+0.21.1 (2022-03-01)
+-------------------
+* Added case for instances of ExecuteLocal in resolveProcess function (`#587 <https://github.com/ros2/launch/issues/587>`_)
+* Add compatitibility with pytest 7 (`#592 <https://github.com/ros2/launch/issues/592>`_)
+* Contributors: Matt Lanting, Shane Loretz
+
+0.21.0 (2022-01-14)
+-------------------
+* Renamed three files from example_processes (`#573 <https://github.com/ros2/launch/issues/573>`_)
+* Fix launch_testing README.md proc keyword to process. (`#554 <https://github.com/ros2/launch/issues/554>`_) (`#560 <https://github.com/ros2/launch/issues/560>`_)
+* Contributors: Jacob Perron, Khush Jain
+
+0.20.0 (2021-11-29)
+-------------------
+* Declare frontend group dependency & use explicit dependencies in launch_testing (`#520 <https://github.com/ros2/launch/issues/520>`_)
+* Update maintainers to Aditya Pande and Michel Hidalgo (`#559 <https://github.com/ros2/launch/issues/559>`_)
+* Updated maintainers (`#555 <https://github.com/ros2/launch/issues/555>`_)
+* First prototype of native pytest plugin for launch based tests (`#528 <https://github.com/ros2/launch/issues/528>`_)
+* Adding Executable description class (`#454 <https://github.com/ros2/launch/issues/454>`_)
+* Add a "hello world" style example (`#532 <https://github.com/ros2/launch/issues/532>`_)
+* Contributors: Aditya Pande, Audrow Nash, Christophe Bedard, Ivan Santiago Paunovic, roger-strain
+
+0.19.0 (2021-07-15)
+-------------------
+
+0.18.0 (2021-06-18)
+-------------------
 
 0.17.0 (2021-04-06)
 -------------------
