@@ -1,3 +1,35 @@
+## launch (humble) - 1.0.4-1
+
+The packages in the `launch` repository were released into the `humble` distro by running `/usr/local/bin/bloom-release -r humble -y launch` on `Tue, 10 Jan 2023 13:56:44 -0000`
+
+These packages were released:
+- `launch`
+- `launch_pytest`
+- `launch_testing`
+- `launch_testing_ament_cmake`
+- `launch_xml`
+- `launch_yaml`
+
+These packages were explicitly ignored:
+- `test_launch_testing`
+
+Version of package(s) in repository `launch`:
+
+- upstream repository: https://github.com/ros2/launch.git
+- release repository: https://github.com/ros2-gbp/launch-release.git
+- rosdistro version: `1.0.3-1`
+- old version: `1.0.3-1`
+- new version: `1.0.4-1`
+
+Versions of tools used:
+
+- bloom version: `0.11.2`
+- catkin_pkg version: `0.5.2`
+- rosdep version: `0.22.1`
+- rosdistro version: `0.9.0`
+- vcstools version: `0.1.42`
+
+
 ## launch (galactic) - 0.17.2-1
 
 The packages in the `launch` repository were released into the `galactic` distro by running `/home/cottsay/infra_ws/install/bin/bloom-release launch -r galactic` on `Fri, 02 Dec 2022 21:44:35 -0000`
