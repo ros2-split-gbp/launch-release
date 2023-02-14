@@ -352,10 +352,35 @@ class ExecuteProcess(ExecuteLocal):
                     )
                 kwargs['respawn_delay'] = respawn_delay
 
+        if 'sigkill_timeout' not in ignore:
+            sigkill_timeout = entity.get_attr('sigkill_timeout', data_type=float, optional=True)
+            if sigkill_timeout is not None:
+                if sigkill_timeout < 0.0:
+                    raise ValueError(
+                        'Attribute sigkill_timeout of Entity node expected to be '
+                        'a non-negative value but got `{}`'.format(sigkill_timeout)
+                    )
+                kwargs['sigkill_timeout'] = str(sigkill_timeout)
+
+        if 'sigterm_timeout' not in ignore:
+            sigterm_timeout = entity.get_attr('sigterm_timeout', data_type=float, optional=True)
+            if sigterm_timeout is not None:
+                if sigterm_timeout < 0.0:
+                    raise ValueError(
+                        'Attribute sigterm_timeout of Entity node expected to be '
+                        'a non-negative value but got `{}`'.format(sigterm_timeout)
+                    )
+                kwargs['sigterm_timeout'] = str(sigterm_timeout)
+
         if 'shell' not in ignore:
             shell = entity.get_attr('shell', data_type=bool, optional=True)
             if shell is not None:
                 kwargs['shell'] = shell
+
+        if 'emulate_tty' not in ignore:
+            emulate_tty = entity.get_attr('emulate_tty', data_type=bool, optional=True)
+            if emulate_tty is not None:
+                kwargs['emulate_tty'] = emulate_tty
 
         if 'additional_env' not in ignore:
             # Conditions won't be allowed in the `env` tag.
