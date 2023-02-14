@@ -31,7 +31,10 @@ def test_executable():
                 cwd: '/'
                 name: my_ls
                 shell: true
+                emulate_tty: true
                 output: log
+                sigkill_timeout: 4.0
+                sigterm_timeout: 7.0
                 'launch-prefix': $(env LAUNCH_PREFIX '')
                 env:
                     -   name: var
@@ -47,7 +50,10 @@ def test_executable():
     assert(executable.cwd[0].perform(None) == '/')
     assert(executable.name[0].perform(None) == 'my_ls')
     assert(executable.shell is True)
+    assert(executable.emulate_tty is True)
     assert(executable.output[0].perform(None) == 'log')
+    assert(executable.sigkill_timeout[0].perform(None) == '4.0')
+    assert(executable.sigterm_timeout[0].perform(None) == '7.0')
     key, value = executable.additional_env[0]
     key = key[0].perform(None)
     value = value[0].perform(None)
