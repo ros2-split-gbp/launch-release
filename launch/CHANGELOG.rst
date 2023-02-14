@@ -2,22 +2,36 @@
 Changelog for package launch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.0.4 (2023-01-10)
+1.4.0 (2023-02-14)
 ------------------
-* Allow ReadyToTest() usage in event handler (`#681 <https://github.com/ros2/launch/issues/681>`_)
-* Contributors: Nikolai Morin
+* Pass modules to PythonExpression (`#655 <https://github.com/ros2/launch/issues/655>`_)
+* Allow ReadyToTest() usage in event handler (`#665 <https://github.com/ros2/launch/issues/665>`_)
+* Expose emulate_tty to xml and yaml launch (`#669 <https://github.com/ros2/launch/issues/669>`_)
+* Expose sigterm_timeout and sigkill_timeout to xml frontend (`#667 <https://github.com/ros2/launch/issues/667>`_)
+* [rolling] Update maintainers - 2022-11-07 (`#671 <https://github.com/ros2/launch/issues/671>`_)
+* Contributors: Aditya Pande, Audrow Nash, Blake Anderson, Nikolai Morin
 
-1.0.3 (2022-10-18)
+1.3.0 (2022-11-02)
 ------------------
-* Fix bug in test_push_and_pop_environment.py
+* Expect deprecation warnings in tests (`#657 <https://github.com/ros2/launch/issues/657>`_)
 * Fix the restoring of os.environ to maintain type. (`#656 <https://github.com/ros2/launch/issues/656>`_)
-* Addresses issue `#588 <https://github.com/ros2/launch/issues/588>`_, allowing dict for 'output' (backport `#640 <https://github.com/ros2/launch/issues/640>`_) (`#647 <https://github.com/ros2/launch/issues/647>`_)
-* Contributors: Chris Lalancette, mergify[bot]
+* Implement Any, All, Equals, and NotEquals substitutions (`#649 <https://github.com/ros2/launch/issues/649>`_)
+* add LaunchLogDir substitution, replacing log_dir frontend only substitution (`#652 <https://github.com/ros2/launch/issues/652>`_)
+* Add special cases to coerce "1" and "0" to bool when using bool coercion only (`#651 <https://github.com/ros2/launch/issues/651>`_)
+* Contributors: Chris Lalancette, Jacob Perron, William Woodall, methylDragon
 
-1.0.2 (2022-05-10)
+1.2.0 (2022-09-13)
 ------------------
+* Update launch/test/launch/test_execute_local.py
+* Added unit test ensuring that output dictionary works with ExecuteLocal
+* Addresses issue `#588 <https://github.com/ros2/launch/issues/588>`_, allowing dict for 'output'
+* Contributors: Matthew Elwin, Michael Jeronimo
+
+1.1.0 (2022-04-29)
+------------------
+* Remove unused variables. (`#612 <https://github.com/ros2/launch/issues/612>`_)
 * Expose shutdown action to xml frontend (`#611 <https://github.com/ros2/launch/issues/611>`_)
-* Contributors: Aditya Pande
+* Contributors: Aditya Pande, Chris Lalancette
 
 1.0.1 (2022-04-13)
 ------------------

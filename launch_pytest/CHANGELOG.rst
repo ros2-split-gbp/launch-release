@@ -2,13 +2,20 @@
 Changelog for package launch_pytest
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.0.4 (2023-01-10)
+1.4.0 (2023-02-14)
+------------------
+* Drop unused data_files entry for example_processes (`#680 <https://github.com/ros2/launch/issues/680>`_)
+* Spelling correction
+* [rolling] Update maintainers - 2022-11-07 (`#671 <https://github.com/ros2/launch/issues/671>`_)
+* Contributors: Audrow Nash, Geoffrey Biggs, Scott K Logan
+
+1.3.0 (2022-11-02)
 ------------------
 
-1.0.3 (2022-10-18)
+1.2.0 (2022-09-13)
 ------------------
 
-1.0.2 (2022-05-10)
+1.1.0 (2022-04-29)
 ------------------
 
 1.0.1 (2022-04-13)

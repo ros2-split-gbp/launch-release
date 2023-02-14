@@ -2,13 +2,20 @@
 Changelog for package launch_xml
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.0.4 (2023-01-10)
+1.4.0 (2023-02-14)
+------------------
+* Expose emulate_tty to xml and yaml launch (`#669 <https://github.com/ros2/launch/issues/669>`_)
+* Expose sigterm_timeout and sigkill_timeout to xml frontend (`#667 <https://github.com/ros2/launch/issues/667>`_)
+* [rolling] Update maintainers - 2022-11-07 (`#671 <https://github.com/ros2/launch/issues/671>`_)
+* Contributors: Aditya Pande, Audrow Nash
+
+1.3.0 (2022-11-02)
 ------------------
 
-1.0.3 (2022-10-18)
+1.2.0 (2022-09-13)
 ------------------
 
-1.0.2 (2022-05-10)
+1.1.0 (2022-04-29)
 ------------------
 
 1.0.1 (2022-04-13)

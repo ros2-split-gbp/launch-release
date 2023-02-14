@@ -2,19 +2,24 @@
 Changelog for package launch_testing
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.0.4 (2023-01-10)
+1.4.0 (2023-02-14)
 ------------------
-* Allow ReadyToTest() usage in event handler (`#681 <https://github.com/ros2/launch/issues/681>`_)
-* Inherit markers from generate_test_description (`#670 <https://github.com/ros2/launch/issues/670>`_) (`#674 <https://github.com/ros2/launch/issues/674>`_)
-* Contributors: Nikolai Morin, mergify[bot]
+* Allow ReadyToTest() usage in event handler (`#665 <https://github.com/ros2/launch/issues/665>`_)
+* Inherit markers from generate_test_description (`#670 <https://github.com/ros2/launch/issues/670>`_)
+* [rolling] Update maintainers - 2022-11-07 (`#671 <https://github.com/ros2/launch/issues/671>`_)
+* Contributors: Audrow Nash, Nikolai Morin, Scott K Logan
 
-1.0.3 (2022-10-18)
+1.3.0 (2022-11-02)
 ------------------
-* Fix Typo (`#641 <https://github.com/ros2/launch/issues/641>`_) (`#644 <https://github.com/ros2/launch/issues/644>`_)
-* Switch to using a comprehension for process_names. (`#614 <https://github.com/ros2/launch/issues/614>`_) (`#615 <https://github.com/ros2/launch/issues/615>`_)
-* Contributors: mergify[bot]
 
-1.0.2 (2022-05-10)
+1.2.0 (2022-09-13)
+------------------
+* Fix Typo (`#641 <https://github.com/ros2/launch/issues/641>`_)
+* ReadyToTest action timeout using decorator (`#625 <https://github.com/ros2/launch/issues/625>`_)
+* Switch to using a comprehension for process_names. (`#614 <https://github.com/ros2/launch/issues/614>`_)
+* Contributors: Chris Lalancette, Deepanshu Bansal, Kenji Brameld
+
+1.1.0 (2022-04-29)
 ------------------
 
 1.0.1 (2022-04-13)

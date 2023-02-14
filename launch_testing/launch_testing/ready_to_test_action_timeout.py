@@ -1,4 +1,4 @@
-# Copyright 2019 Open Source Robotics Foundation, Inc.
+# Copyright 2022 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,14 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for the PathJoinSubstitution substitution class."""
 
-import os
+def ready_to_test_action_timeout(timeout):
+    """
+    Decorate a test launch description in a way that it adds ReadyToTest action timeout.
 
-from launch.substitutions import PathJoinSubstitution
+    attribute to the function being decorated.
 
+    :param: timeout Duration for which the ReadyToTest action waits for processes to start up
 
-def test_path_join():
-    path = ['asd', 'bsd', 'cds']
-    sub = PathJoinSubstitution(path)
-    assert sub.perform(None) == os.path.join(*path)
+    """
+
+    def _decorator(func):
+        func.__ready_to_test_action_timeout__ = timeout
+        return func
+
+    return _decorator
