@@ -223,6 +223,21 @@ class ExecuteLocal(Action):
         return self.__shell
 
     @property
+    def emulate_tty(self):
+        """Getter for emulate_tty."""
+        return self.__emulate_tty
+
+    @property
+    def sigkill_timeout(self):
+        """Getter for sigkill timeout."""
+        return self.__sigkill_timeout
+
+    @property
+    def sigterm_timeout(self):
+        """Getter for sigterm timeout."""
+        return self.__sigterm_timeout
+
+    @property
     def output(self):
         """Getter for output."""
         return self.__output
