@@ -2,6 +2,9 @@
 Changelog for package launch_pytest
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.0.0 (2023-04-11)
+------------------
+
 1.4.1 (2023-02-24)
 ------------------
 * Fixed typos (`#692 <https://github.com/ros2/launch/issues/692>`_)
