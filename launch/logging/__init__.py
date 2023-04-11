@@ -24,6 +24,7 @@ import os
 import socket
 import sys
 
+from typing import Any
 from typing import List
 
 from . import handlers
@@ -81,6 +82,24 @@ def _make_unique_log_dir(*, base_path):
             return log_dir
 
 
+def _renew_latest_log_dir(*, log_dir):
+    """
+    Renew the symbolic link to the latest logging directory.
+
+    :param log_dir: the current logging directory
+    :return True if the link was successfully created/updated, False otherwise
+    """
+    base_dir = os.path.dirname(log_dir)
+    latest_dir = os.path.join(base_dir, 'latest')
+
+    if os.path.lexists(latest_dir):
+        if not os.path.islink(latest_dir):
+            return False
+        os.unlink(latest_dir)
+    os.symlink(log_dir, latest_dir, target_is_directory=True)
+    return True
+
+
 class LaunchConfig:
     """Launch Logging Configuration class."""
 
@@ -118,6 +137,18 @@ class LaunchConfig:
             self._log_dir = _make_unique_log_dir(
                 base_path=_get_logging_directory()
             )
+            try:
+                success = _renew_latest_log_dir(log_dir=self._log_dir)
+                if not success:
+                    import warnings
+                    warnings.warn(
+                        'Cannot create a symlink to latest log directory')
+
+            except OSError as e:
+                import warnings
+                warnings.warn(
+                    ('Cannot create a symlink to latest log directory: {}\n')
+                    .format(e))
 
         return self._log_dir
 
@@ -288,7 +319,7 @@ def log_launch_config(*, logger=logging.root):
     )))
 
 
-def get_logger(name=None):
+def get_logger(name=None) -> logging.Logger:
     """Get named logger, configured to output to screen and launch main log file."""
     logger = logging.getLogger(name)
     screen_handler = launch_config.get_screen_handler()
@@ -456,8 +487,13 @@ def get_output_loggers(process_name, output_config):
     )
 
 
+# Mypy does not support dynamic base classes, so workaround by typing the base
+# class as Any
+_Base = logging.getLoggerClass()  # type: Any
+
+
 # Track all loggers to support module resets
-class LaunchLogger(logging.getLoggerClass()):
+class LaunchLogger(_Base):
     all_loggers: List[logging.Logger] = []
 
     def __new__(cls, *args, **kwargs):
