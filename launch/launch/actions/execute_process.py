@@ -28,6 +28,8 @@ from ..frontend import Entity
 from ..frontend import expose_action
 from ..frontend import Parser
 from ..some_substitutions_type import SomeSubstitutionsType
+
+from ..substitution import Substitution
 from ..substitutions import TextSubstitution
 
 
@@ -204,7 +206,7 @@ class ExecuteProcess(ExecuteLocal):
             be overridden with the LaunchConfiguration called 'emulate_tty',
             the value of which is evaluated as true or false according to
             :py:func:`evaluate_condition_expression`.
-            Throws :py:exception:`InvalidConditionExpressionError` if the
+            Throws :py:exc:`InvalidConditionExpressionError` if the
             'emulate_tty' configuration does not represent a boolean.
         :param: prefix a set of commands/arguments to precede the cmd, used for
             things like gdb/valgrind and defaults to the LaunchConfiguration
@@ -250,7 +252,7 @@ class ExecuteProcess(ExecuteLocal):
         :returns: a list of command line arguments.
         """
         result_args = []
-        arg = []
+        arg: List[Substitution] = []
 
         def _append_arg():
             nonlocal arg
