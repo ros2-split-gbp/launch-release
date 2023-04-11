@@ -14,7 +14,7 @@
 
 """Module for the ThisLaunchFileDir substitution."""
 
-from typing import Iterable
+from typing import Sequence
 from typing import Text
 
 from .substitution_failure import SubstitutionFailure
@@ -33,7 +33,7 @@ class ThisLaunchFileDir(Substitution):
         super().__init__()
 
     @classmethod
-    def parse(cls, data: Iterable[SomeSubstitutionsType]):
+    def parse(cls, data: Sequence[SomeSubstitutionsType]):
         """Parse `ThisLaunchFileDir` substitution."""
         if len(data) != 0:
             raise TypeError("dirname substitution doesn't expect arguments")
@@ -50,7 +50,8 @@ class ThisLaunchFileDir(Substitution):
         If there is no current launch file, i.e. if run from a script, then an
         error is raised.
 
-        :raises: SubstitutionFailure if not in a launch file
+        :raises `launch.substitutions.substitution_failure.SubstitutionFailure`:
+            if not in a launch file
         """
         if 'current_launch_file_directory' not in context.get_locals_as_dict():
             raise SubstitutionFailure(
