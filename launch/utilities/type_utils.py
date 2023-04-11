@@ -26,7 +26,9 @@ from typing import Tuple
 from typing import Type
 from typing import Union
 
-import yaml
+# yaml has type annotations in typeshed, but those cannot be installed via rosdep
+# since there is no definition for types-PyYAML
+import yaml  # type: ignore
 
 from .ensure_argument_type_impl import ensure_argument_type
 from .normalize_to_list_of_substitutions_impl import normalize_to_list_of_substitutions
@@ -108,11 +110,11 @@ def is_typing_list(data_type: Any) -> bool:
 
     Examples
     --------
-    ```python3
-    assert is_typing_list(typing.List)
-    assert is_typing_list(typing.List[int])
-    assert not is_typing_list(int)
-    ```
+    .. code-block:: python
+
+        assert is_typing_list(typing.List)
+        assert is_typing_list(typing.List[int])
+        assert not is_typing_list(int)
 
     """
     return data_type is List or (
@@ -147,8 +149,8 @@ def extract_type(data_type: AllowedTypesType) -> Tuple[ScalarTypesType, bool]:
         `type_obj` is the object representing that type in Python. In the case of a list,
         it's the type of the items.
         e.g.:
-            `data_type = List[int]` -> `(int, True)`
-            `data_type = bool` -> `(bool, False)`
+        `data_type = List[int]` -> `(int, True)`
+        `data_type = bool` -> `(bool, False)`
     """
     is_list = False
     scalar_type: ScalarTypesType = cast(ScalarTypesType, data_type)
@@ -200,6 +202,7 @@ def is_instance_of(
     """
     if data_type is None:
         return is_instance_of_valid_type(value, can_be_str=can_be_str)
+    type_obj: Union[Tuple[Type[str], AllowedTypesType], AllowedTypesType]
     type_obj, is_list = extract_type(data_type)
     if can_be_str:
         type_obj = (str, type_obj)
@@ -342,12 +345,15 @@ def get_typed_value(
                     f"Cannot convert input '{value}' of type '{type(value)}' to"
                     f" '{data_type}'"
                 )
-        output: AllowedValueType = coerce_list(value, data_type, can_be_str=can_be_str)
+        return coerce_list(value, data_type, can_be_str=can_be_str)
     else:
-        output = coerce_to_type(value, data_type, can_be_str=can_be_str)
-    return output
+        return coerce_to_type(value, data_type, can_be_str=can_be_str)
 
 
+# Unfortunately, mypy is unable to correctly infer that `is_substitution` can
+# only return True when the passed tpe is either a substitution or a mixed
+# list of strings and substitutions. Indeed, there is no way that I could find
+# using overloads to describe "anything else than the above two types".
 def is_substitution(x):
     """
     Return `True` if `x` is some substitution.
@@ -355,7 +361,7 @@ def is_substitution(x):
     This can be:
     - A :py:class:`launch.Substitution` instance.
     - A list of mixed `launch.Substitution` and `str` instances,
-        with at least one instance of the former.
+    with at least one instance of the former.
     """
     return (
         isinstance(x, Substitution) or
@@ -379,16 +385,16 @@ def normalize_typed_substitution(
 
     Example:
     -------
-    ```python3
-    class MyAction(Action):
-        def __init__(self, my_int: Union[int, SomeSubstitutionsType]):
-            self.__my_int_normalized = normalize_typed_substitution(some_int, int)
-            ...
+    .. code-block:: python
 
-        def execute(self, context):
-            my_int = perform_typed_substitution(context, self.__my_int_normalized, int)
-            ...
-    ```
+        class MyAction(Action):
+            def __init__(self, my_int: Union[int, SomeSubstitutionsType]):
+                self.__my_int_normalized = normalize_typed_substitution(some_int, int)
+                ...
+
+            def execute(self, context):
+                my_int = perform_typed_substitution(context, self.__my_int_normalized, int)
+                ...
 
     List of substitutions coerced a list to strings can be confused with a single substitution
     that is coerced to a list of strings.
@@ -517,7 +523,7 @@ def perform_typed_substitution(
     context: LaunchContext,
     value: NormalizedValueType,
     data_type: Optional[AllowedTypesType]
-) -> AllowedValueType:
+) -> StrSomeValueType:
     """
     Perform a normalized typed substitution.
 
