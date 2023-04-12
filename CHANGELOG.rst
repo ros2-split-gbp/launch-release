@@ -2,6 +2,9 @@
 Changelog for package launch_testing
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.0.1 (2023-04-12)
+------------------
+
 2.0.0 (2023-04-11)
 ------------------
 * Improve type checking (`#679 <https://github.com/ros2/launch/issues/679>`_)
