@@ -1,0 +1,12 @@
+Source: ros-iron-launch-pytest
+Section: misc
+Priority: optional
+Maintainer: Aditya Pande <aditya.pande@openrobotics.org>
+Build-Depends: debhelper (>= 9.0.0), ros-iron-ament-copyright <!nocheck>, ros-iron-ament-flake8 <!nocheck>, ros-iron-ament-pep257 <!nocheck>, ros-iron-launch <!nocheck>, ros-iron-ros-workspace, python3-all, python3-setuptools, dh-python
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-iron-launch-pytest
+Architecture: any
+Depends: ${python3:Depends}, ${misc:Depends}, python3-pytest, ros-iron-ament-index-python, ros-iron-launch, ros-iron-launch-testing, ros-iron-osrf-pycommon, ros-iron-ros-workspace
+Description: A package to create tests which involve launch files and multiple processes.
